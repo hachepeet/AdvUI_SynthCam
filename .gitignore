@@ -43,6 +43,7 @@ build/
 Build/
 build-*/
 JUCE/
+.vscode/
 
 # CMake generated files
 CMakeFiles/
