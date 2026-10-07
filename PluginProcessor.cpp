@@ -18,11 +18,9 @@ parameters (*this, nullptr, juce::Identifier("Sine Synth"),
 {   // in the tutorial the fq slider is from 50-5000 so that's what the range is here, default is 440
     std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("frequency",1), "Frequency", 50.0f, 5000.0f, 440.0f),
     std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("volume",1), "Volume", 0.0f, 1.0f, 0.125f)
-})
+}),
+model (parameters)
 {
-    // depthPtr = parameters.getRawParameterValue ("lfodepth");
-    freqPtr = parameters.getRawParameterValue ("frequency");
-    volumePtr = parameters.getRawParameterValue ("volume");
 }
 
 AudioPluginAudioProcessor::~AudioPluginAudioProcessor()
@@ -101,11 +99,7 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // initialisation that you need..
     juce::ignoreUnused (sampleRate, samplesPerBlock);
 
-    currentSampleRate = sampleRate;
-    // the equivalent of updateAngleDelta from the tutorial
-    auto frequency = static_cast<double> (*freqPtr);
-    auto cyclesPerSample = frequency / currentSampleRate; // calc # of cycles to complete for each output sample
-    angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi; // multiply by the length of a whole sine wave cycle
+    model.prepareToPlay (sampleRate);
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -142,25 +136,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
                                               juce::MidiBuffer& midiMessages)
 {
     juce::ignoreUnused (midiMessages);
-
-    // same code as in prepareToPlay -> prepareToPlay only runs when playback starts 
-    // in the tutorial, angleDelta is updated every time the slider moves 
-    auto frequency = static_cast<double> (*freqPtr);
-    auto cyclesPerSample = frequency / currentSampleRate; // calc # of cycles to complete for each output sample
-    angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi; // multiply by the length of a whole sine wave cycle
-
-    auto level = static_cast<float> (*volumePtr);
-    auto* leftBuffer  = buffer.getWritePointer(0);
-    auto* rightBuffer = buffer.getWritePointer(1);
-    
-    // for each output sample: calculate sine function for current angle
-    // then increment angle for next sample
-    for(int sample = 0; sample < buffer.getNumSamples(); sample++) {
-        auto currentSample = (float) std::sin (currentAngle);
-        currentAngle += angleDelta;
-        leftBuffer[sample] = currentSample * level;
-        rightBuffer[sample] = currentSample * level;
-    }
+    model.render (buffer);
 }
 
 //==============================================================================
@@ -177,17 +153,17 @@ juce::AudioProcessorEditor* AudioPluginAudioProcessor::createEditor()
 //==============================================================================
 void AudioPluginAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
-    juce::ignoreUnused (destData);
+    const auto state = parameters.copyState();
+    const std::unique_ptr<juce::XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void AudioPluginAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
-    juce::ignoreUnused (data, sizeInBytes);
+    const std::unique_ptr<juce::XmlElement> xml (getXmlFromBinary (data, sizeInBytes));
+
+    if (xml != nullptr && xml->hasTagName (parameters.state.getType()))
+        parameters.replaceState (juce::ValueTree::fromXml (*xml));
 }
 
 //==============================================================================

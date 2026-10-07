@@ -1,27 +1,22 @@
 #pragma once
 
 #include "PluginProcessor.h"
+#include "SynthView.h"
 
-//==============================================================================
 class AudioPluginAudioProcessorEditor final : public juce::AudioProcessorEditor
 {
 public:
-    explicit AudioPluginAudioProcessorEditor (AudioPluginAudioProcessor&);
+    explicit AudioPluginAudioProcessorEditor(AudioPluginAudioProcessor &);
     ~AudioPluginAudioProcessorEditor() override;
 
-    //==============================================================================
-    void paint (juce::Graphics&) override;
     void resized() override;
 
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
-    AudioPluginAudioProcessor& processorRef;
-
-    juce::Slider frequencySlider;
-    juce::Slider volumeSlider;
+    // The editor coordinates the model and view; the view owns presentation.
+    AudioPluginAudioProcessor &processorRef;
+    std::unique_ptr<SynthView> view;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> fqAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> volAttachment;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessorEditor)
 };
