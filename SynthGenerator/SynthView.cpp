@@ -1,4 +1,5 @@
 #include "SynthView.h"
+#include "Theme.h"
 
 SynthView::SynthView()
 {
@@ -18,7 +19,7 @@ SynthView::SynthView()
 
 void SynthView::paint(juce::Graphics &graphics)
 {
-    graphics.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    graphics.fillAll(SynthCamTheme::backgroundColour);
 }
 
 void SynthView::resized()

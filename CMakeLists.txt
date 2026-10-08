@@ -80,6 +80,10 @@ target_sources(SynthGenerator
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthModel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthView.cpp)
 
+target_include_directories(SynthGenerator
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared)
+
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
 # project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use
 # of compile definitions to switch certain features on/off, so if there's a particular feature you
@@ -158,6 +162,10 @@ target_sources(FXCam
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/PluginProcessor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/SynthModel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/SynthView.cpp)
+
+target_include_directories(FXCam
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
 # project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use
