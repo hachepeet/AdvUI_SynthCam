@@ -2,10 +2,10 @@
 
 #include <juce_audio_processors/juce_audio_processors.h>
 
-class SynthModel final
+class FXModel final
 {
 public:
-    explicit SynthModel(juce::AudioProcessorValueTreeState &parameters);
+    explicit FXModel(juce::AudioProcessorValueTreeState &parameters);
 
     void prepareToPlay(double sampleRate);
     void render(juce::AudioBuffer<float> &buffer);
@@ -14,10 +14,10 @@ public:
 
 private:
     juce::AudioProcessorValueTreeState &parameters;
-    std::atomic<float> *frequency = nullptr;
+    // std::atomic<float> *frequency = nullptr;
     std::atomic<float> *volume = nullptr;
     double sampleRate = 0.0;
-    double currentAngle = 0.0;
+    // double currentAngle = 0.0;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SynthModel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FXModel)
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
-#include "SynthModel.h"
+#include "FXModel.h"
 
 //==============================================================================
 class AudioPluginAudioProcessor final : public juce::AudioProcessor
@@ -45,11 +45,11 @@ public:
 
     // double phase = 0.0;
     juce::AudioProcessorValueTreeState &getParameters() { return parameters; }
-    SynthModel &getModel() noexcept { return model; }
+    FXModel &getModel() noexcept { return model; }
 
 private:
     juce::AudioProcessorValueTreeState parameters;
-    SynthModel model;
+    FXModel model;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessor)
 };

@@ -160,8 +160,8 @@ target_sources(FXCam
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/PluginEditor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/PluginProcessor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/SynthModel.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/SynthView.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FXModel.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FXView.cpp)
 
 target_include_directories(FXCam
     PRIVATE

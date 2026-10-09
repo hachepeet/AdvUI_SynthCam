@@ -29,7 +29,7 @@ AudioPluginAudioProcessor::~AudioPluginAudioProcessor()
 //==============================================================================
 const juce::String AudioPluginAudioProcessor::getName() const
 {
-    return "SynthGenerator";
+    return "AudioPluginExample";
 }
 
 bool AudioPluginAudioProcessor::acceptsMidi() const
