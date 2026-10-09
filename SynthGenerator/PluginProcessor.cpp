@@ -29,7 +29,7 @@ AudioPluginAudioProcessor::~AudioPluginAudioProcessor()
 //==============================================================================
 const juce::String AudioPluginAudioProcessor::getName() const
 {
-    return "AudioPluginExample";
+    return "SynthGenerator";
 }
 
 bool AudioPluginAudioProcessor::acceptsMidi() const
@@ -97,8 +97,9 @@ void AudioPluginAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
     juce::ignoreUnused(sampleRate, samplesPerBlock);
-
-    model.prepareToPlay(sampleRate);
+    auto frequency = parameters.getRawParameterValue("frequency")->load();
+    auto volume = parameters.getRawParameterValue("volume")->load();
+    model.prepareToPlay(sampleRate, frequency, volume);
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -134,7 +135,9 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
                                              juce::MidiBuffer &midiMessages)
 {
     juce::ignoreUnused(midiMessages);
-    model.render(buffer);
+    auto frequency = parameters.getRawParameterValue("frequency")->load();
+    auto volume = parameters.getRawParameterValue("volume")->load();
+    model.render(buffer, frequency, volume);
 }
 
 //==============================================================================
