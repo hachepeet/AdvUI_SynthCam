@@ -11,11 +11,11 @@ public:
     void resized() override;
 
     juce::Slider &getFrequencySlider() noexcept;
-    juce::Slider &getVolumeSlider() noexcept;
+    juce::Slider &getWaveformSlider() noexcept;
 
 private:
     juce::Slider frequencySlider;
-    juce::Slider volumeSlider;
+    juce::Slider waveformSlider;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SynthView)
 };
