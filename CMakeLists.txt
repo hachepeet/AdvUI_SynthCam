@@ -141,7 +141,9 @@ juce_add_plugin(FXCam
     FORMATS AU VST3 Standalone                  # The formats to build. Other valid formats are: AAX Unity VST AU AUv3
     PRODUCT_NAME "SynthCam - FXCam"         # The name of the final executable, which can differ from the target name
     NEEDS_WEB_BROWSER FALSE                     # Set to TRUE if you need to use webviews
-    NEEDS_CURL FALSE)                           # Set to TRUE if you need to use curl
+    NEEDS_CURL FALSE                            # Set to TRUE if you need to use curl
+    CAMERA_PERMISSION_ENABLED TRUE
+    CAMERA_PERMISSION_TEXT "FXCam uses the camera to capture hand motion")                           
 
 # `juce_generate_juce_header` will create a JuceHeader.h for a given target, which will be generated
 # into your build tree. This should be included with `#include <JuceHeader.h>`. The include path for
