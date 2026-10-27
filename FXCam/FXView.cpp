@@ -4,7 +4,8 @@
 FXView::FXView()
 {
     addAndMakeVisible(cameraView);
-    addAndMakeVisible(volumeSlider);
+    addAndMakeVisible(delaySlider);
+    addAndMakeVisible(dryWetSlider);
 
     // for (auto *slider : {&frequencySlider, &volumeSlider})
     // {
@@ -14,9 +15,17 @@ FXView::FXView()
 
     // frequencySlider.setRange(50.0, 5000.0);
     // frequencySlider.setSkewFactorFromMidPoint(500.0);
-    volumeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
-    volumeSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
-    volumeSlider.setRange(0.0, 1.0);
+    // volumeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    // volumeSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
+    // volumeSlider.setRange(0.0, 1.0);
+
+    delaySlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    delaySlider.setRange(1.0, 1000.0, 1.0);
+    delaySlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
+
+    dryWetSlider.setSliderStyle(juce::Slider::LinearHorizontal);
+    dryWetSlider.setRange(0.0, 1.0, 0.0);
+    dryWetSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
 }
 
 void FXView::paint(juce::Graphics &graphics)
@@ -28,8 +37,8 @@ void FXView::resized()
 {
     auto area = getLocalBounds().reduced(20);
     cameraView.setBounds(area.removeFromTop(220));
-    area.removeFromTop(12);
-    volumeSlider.setBounds(area.removeFromTop(100));
+    delaySlider.setBounds(area.removeFromTop(100));
+    dryWetSlider.setBounds(area.removeFromTop(100));
 }
 
 // juce::Slider &FXView::getFrequencySlider() noexcept
@@ -37,7 +46,17 @@ void FXView::resized()
 //     return frequencySlider;
 // }
 
-juce::Slider &FXView::getVolumeSlider() noexcept
+// juce::Slider &FXView::getVolumeSlider() noexcept
+// {
+//     return volumeSlider;
+// }
+
+juce::Slider &FXView::getDelaySlider() noexcept
 {
-    return volumeSlider;
+    return delaySlider;
+}
+
+juce::Slider &FXView::getDryWetSlider() noexcept
+{
+    return dryWetSlider;
 }

@@ -16,7 +16,10 @@ private:
     AudioPluginAudioProcessor &processorRef;
     std::unique_ptr<FXView> view;
     // std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> fqAttachment;
-    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> volAttachment;
+    // std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> volAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> delayAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> dryWetAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessorEditor)
 };
+ 

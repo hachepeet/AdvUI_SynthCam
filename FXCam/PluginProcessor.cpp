@@ -15,7 +15,8 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor() :
 
 #endif
                                                          parameters(*this, nullptr, juce::Identifier("Sine Synth"),
-                                                                    {std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("volume", 1), "Volume", 0.0f, 1.0f, 0.125f)}),
+                                                                    {std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("delayTime", 1), "DelayTime", 1.0f, 1000.0f, 250.0f),
+                                                                    std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("dryWet", 1), "DryWet", 0.0f, 1.0f, 0.0f)}),
                                                          model(parameters)
 {
 }
@@ -96,7 +97,7 @@ void AudioPluginAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
     // initialisation that you need..
     juce::ignoreUnused(sampleRate, samplesPerBlock);
 
-    model.prepareToPlay(sampleRate);
+    model.prepareToPlay(sampleRate, getTotalNumOutputChannels());
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -168,3 +169,4 @@ juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()
 {
     return new AudioPluginAudioProcessor();
 }
+ 

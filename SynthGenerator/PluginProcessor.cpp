@@ -17,7 +17,7 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor() :
                                                          parameters(*this, nullptr, juce::Identifier("Sine Synth"),
                                                                     {// in the tutorial the fq slider is from 50-5000 so that's what the range is here, default is 440
                                                                      std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("frequency", 1), "Frequency", 50.0f, 5000.0f, 220.0f),
-                                                                     std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("volume", 1), "Volume", 0.0f, 1.0f, 0.125f)}),
+                                                                     std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("waveform", 1), "Waveform", 0.0f, 4.0f, 0.0f)}),
                                                          model(parameters)
 {
 }
@@ -98,8 +98,8 @@ void AudioPluginAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
     // initialisation that you need..
     juce::ignoreUnused(sampleRate, samplesPerBlock);
     auto frequency = parameters.getRawParameterValue("frequency")->load();
-    auto volume = parameters.getRawParameterValue("volume")->load();
-    model.prepareToPlay(sampleRate, frequency, volume);
+    auto waveform = parameters.getRawParameterValue("waveform")->load();
+    model.prepareToPlay(sampleRate, frequency, waveform);
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -136,8 +136,8 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
 {
     juce::ignoreUnused(midiMessages);
     auto frequency = parameters.getRawParameterValue("frequency")->load();
-    auto volume = parameters.getRawParameterValue("volume")->load();
-    model.render(buffer, frequency, volume);
+    auto waveform = parameters.getRawParameterValue("waveform")->load();
+    model.render(buffer, frequency, waveform);
 }
 
 //==============================================================================
