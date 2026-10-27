@@ -3,7 +3,7 @@
 
 FXView::FXView()
 {
-    // addAndMakeVisible(frequencySlider);
+    addAndMakeVisible(cameraView);
     addAndMakeVisible(volumeSlider);
 
     // for (auto *slider : {&frequencySlider, &volumeSlider})
@@ -27,7 +27,8 @@ void FXView::paint(juce::Graphics &graphics)
 void FXView::resized()
 {
     auto area = getLocalBounds().reduced(20);
-    frequencySlider.setBounds(area.removeFromTop(100));
+    cameraView.setBounds(area.removeFromTop(220));
+    area.removeFromTop(12);
     volumeSlider.setBounds(area.removeFromTop(100));
 }
 

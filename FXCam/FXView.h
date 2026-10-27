@@ -1,6 +1,7 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
+#include "CameraView.h"
 
 class FXView final : public juce::Component
 {
@@ -14,6 +15,7 @@ public:
     juce::Slider &getVolumeSlider() noexcept;
 
 private:
+    CameraView cameraView;
     juce::Slider frequencySlider;
     juce::Slider volumeSlider;
 
