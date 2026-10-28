@@ -1,7 +1,7 @@
 #include "FXModel.h"
 
 FXModel::FXModel(juce::AudioProcessorValueTreeState &state)
-    : parameters(state)
+    : parameters(state), delay(parameters)
     //   ,volume(parameters.getRawParameterValue("volume"))
 {
 }
@@ -10,14 +10,10 @@ void FXModel::prepareToPlay(double newSampleRate, int numChannels)
 {
     sampleRate = newSampleRate;
 
-    delaySize = 2097152;
-    delayMask = delaySize - 1;
-    writePointer = 0;
+    // delay things
+    delay.prepareToPlay(newSampleRate, numChannels);
 
-    delayBuffer.setSize(numChannels, delaySize);
-    delayBuffer.clear();
-    // currentAngle = 0.0;
-
+    // reverb things
     reverb.setSampleRate(newSampleRate);
     reverb.reset();
 
@@ -33,12 +29,13 @@ void FXModel::prepareToPlay(double newSampleRate, int numChannels)
 
 void FXModel::render(juce::AudioBuffer<float> &buffer)
 {
-    if (sampleRate <= 0.0 || buffer.getNumChannels() == 0 || delayBuffer.getNumChannels() == 0)
+    if (sampleRate <= 0.0 || buffer.getNumChannels() == 0)
     {
         buffer.clear();
         return;
     }
 
+    // KEEP COMMENTED OUT
     // const auto volume = parameters.getRawParameterValue("volume")->load();
 
     // for (int channel = 0; channel < buffer.getNumChannels(); ++channel){
@@ -46,30 +43,12 @@ void FXModel::render(juce::AudioBuffer<float> &buffer)
     // }
 
     // delay things
-    const auto delayTime = parameters.getRawParameterValue("delayTime")->load();
-    const auto dryWetLevel = parameters.getRawParameterValue("dryWet")->load();
-
-    for (int sample = 0; sample < buffer.getNumSamples(); ++sample){
-        auto readPointer = writePointer + (long)(delayTime * 0.001 * sampleRate); 
-        readPointer &= delayMask;
-        for (int channel = 0; channel < buffer.getNumChannels(); ++channel){
-            auto* pointerToInputData = buffer.getWritePointer(channel);
-            auto* pointerToDelayData = delayBuffer.getWritePointer(channel);
-
-            const auto inputSample = pointerToInputData[sample];
-            const auto delayedSample = pointerToDelayData[readPointer];
-            pointerToDelayData[writePointer] = std::tanh(inputSample + feedback * delayedSample); 
-            pointerToInputData[sample] = inputSample + dryWetLevel * delayedSample; 
-
-        }
-        writePointer = writePointer - 1;
-        writePointer &= delayMask;
-    }
+    delay.render(buffer);
 
     // reverb things
     const auto roomSize = parameters.getRawParameterValue("roomSize")->load();
     const auto reverbDryWetLevel = parameters.getRawParameterValue("reverbDryWet")->load();
-    auto reverbParams = reverb.getParameters();
+    auto reverbParams = reverb.getParameters(); 
 
     reverbParams.roomSize = roomSize;
     reverbParams.wetLevel = reverbDryWetLevel;
@@ -83,6 +62,7 @@ void FXModel::render(juce::AudioBuffer<float> &buffer)
         reverb.processStereo(buffer.getWritePointer(0), buffer.getWritePointer(1), buffer.getNumSamples());
     }
 
+    // KEEP COMMENTED OUT
     // const auto frequencyInHz = static_cast<double>(*frequency);
     // const auto level = static_cast<float>(*volume);
     // const auto angleDelta = frequencyInHz / sampleRate * juce::MathConstants<double>::twoPi;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include "Delay.h"
 
 class FXModel final
 {
@@ -18,11 +19,12 @@ private:
     // std::atomic<float> *volume = nullptr;
     double sampleRate = 0.0;
     // double currentAngle = 0.0;
-    juce::AudioBuffer<float> delayBuffer;
-    int delaySize = 2097152;
-    int delayMask = delaySize - 1;
-    int writePointer = 0;
-    float feedback = 0.5f;
+    Delay delay;
+    // juce::AudioBuffer<float> delayBuffer;
+    // int delaySize = 2097152;
+    // int delayMask = delaySize - 1;
+    // int writePointer = 0;
+    // float feedback = 0.5f;
     juce::Reverb reverb;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FXModel)
