@@ -23,6 +23,7 @@ private:
     int delayMask = delaySize - 1;
     int writePointer = 0;
     float feedback = 0.5f;
+    juce::Reverb reverb;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FXModel)
 };

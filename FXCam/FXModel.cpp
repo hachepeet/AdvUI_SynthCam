@@ -17,6 +17,18 @@ void FXModel::prepareToPlay(double newSampleRate, int numChannels)
     delayBuffer.setSize(numChannels, delaySize);
     delayBuffer.clear();
     // currentAngle = 0.0;
+
+    reverb.setSampleRate(newSampleRate);
+    reverb.reset();
+
+    juce::Reverb::Parameters reverbParams;
+    reverbParams.roomSize = 0.5f; // will later be changed based on user input
+    reverbParams.damping = 0.5f;
+    reverbParams.wetLevel = 0.5f; // will later be changed based on user input
+    reverbParams.dryLevel = 0.5f; // will later be changed based on user input
+    reverbParams.width = 1.0f;
+    reverbParams.freezeMode = 0.0f;
+    reverb.setParameters(reverbParams);
 }
 
 void FXModel::render(juce::AudioBuffer<float> &buffer)
@@ -33,6 +45,7 @@ void FXModel::render(juce::AudioBuffer<float> &buffer)
     //     buffer.applyGain(channel, 0, buffer.getNumSamples(), volume);
     // }
 
+    // delay things
     const auto delayTime = parameters.getRawParameterValue("delayTime")->load();
     const auto dryWetLevel = parameters.getRawParameterValue("dryWet")->load();
 
@@ -51,6 +64,23 @@ void FXModel::render(juce::AudioBuffer<float> &buffer)
         }
         writePointer = writePointer - 1;
         writePointer &= delayMask;
+    }
+
+    // reverb things
+    const auto roomSize = parameters.getRawParameterValue("roomSize")->load();
+    const auto reverbDryWetLevel = parameters.getRawParameterValue("reverbDryWet")->load();
+    auto reverbParams = reverb.getParameters();
+
+    reverbParams.roomSize = roomSize;
+    reverbParams.wetLevel = reverbDryWetLevel;
+    reverbParams.dryLevel = 1.0f - reverbDryWetLevel;
+    reverb.setParameters(reverbParams);
+
+    if (buffer.getNumChannels() == 1){
+        reverb.processMono(buffer.getWritePointer(0), buffer.getNumSamples());
+    }
+    else if (buffer.getNumChannels() == 2){
+        reverb.processStereo(buffer.getWritePointer(0), buffer.getWritePointer(1), buffer.getNumSamples());
     }
 
     // const auto frequencyInHz = static_cast<double>(*frequency);
