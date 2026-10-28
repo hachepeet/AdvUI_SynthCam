@@ -11,8 +11,6 @@ public:
     void paint(juce::Graphics &) override;
     void resized() override;
 
-    // juce::Slider &getFrequencySlider() noexcept;
-    // juce::Slider &getVolumeSlider() noexcept;
     juce::Slider &getDelaySlider() noexcept;
     juce::Slider &getDryWetSlider() noexcept;
     juce::Slider &getRoomSizeSlider() noexcept;

@@ -9,17 +9,11 @@ FXView::FXView()
     addAndMakeVisible(roomSizeSlider);
     addAndMakeVisible(reverbDryWetSlider);
 
-    // for (auto *slider : {&frequencySlider, &volumeSlider})
+    // for (auto *slider : {&delaySlider, &dryWetSlider, &roomSizeSlider, &reverbDryWetSlider})
     // {
     //     slider->setSliderStyle(juce::Slider::LinearHorizontal);
     //     slider->setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
     // }
-
-    // frequencySlider.setRange(50.0, 5000.0);
-    // frequencySlider.setSkewFactorFromMidPoint(500.0);
-    // volumeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
-    // volumeSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
-    // volumeSlider.setRange(0.0, 1.0);
 
     delaySlider.setSliderStyle(juce::Slider::LinearHorizontal);
     delaySlider.setRange(1.0, 1000.0, 1.0);
@@ -52,16 +46,6 @@ void FXView::resized()
     roomSizeSlider.setBounds(area.removeFromTop(100));
     reverbDryWetSlider.setBounds(area.removeFromTop(100));
 }
-
-// juce::Slider &FXView::getFrequencySlider() noexcept
-// {
-//     return frequencySlider;
-// }
-
-// juce::Slider &FXView::getVolumeSlider() noexcept
-// {
-//     return volumeSlider;
-// }
 
 juce::Slider &FXView::getDelaySlider() noexcept
 {

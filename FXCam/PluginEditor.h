@@ -15,8 +15,6 @@ private:
     // The editor coordinates the model and view; the view owns presentation.
     AudioPluginAudioProcessor &processorRef;
     std::unique_ptr<FXView> view;
-    // std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> fqAttachment;
-    // std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> volAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> delayAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> dryWetAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> roomSizeAttachment;
