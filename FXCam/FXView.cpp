@@ -3,33 +3,38 @@
 
 FXView::FXView()
 {
+    addAndMakeVisible(effectSelector);
+    effectSelector.addItem("Delay",1);
+    effectSelector.addItem("Reverb",2);
+    effectSelector.setSelectedId(1);
+
+    effectSelector.onChange = [this]
+    {
+        delaySelected = effectSelector.getSelectedId() == 1;
+        delaySlider.setVisible(delaySelected);
+        dryWetSlider.setVisible(delaySelected);
+        roomSizeSlider.setVisible(!delaySelected);
+        reverbDryWetSlider.setVisible(!delaySelected);
+    };
+
     addAndMakeVisible(cameraView);
+
     addAndMakeVisible(delaySlider);
     addAndMakeVisible(dryWetSlider);
     addAndMakeVisible(roomSizeSlider);
     addAndMakeVisible(reverbDryWetSlider);
 
-    // for (auto *slider : {&delaySlider, &dryWetSlider, &roomSizeSlider, &reverbDryWetSlider})
-    // {
-    //     slider->setSliderStyle(juce::Slider::LinearHorizontal);
-    //     slider->setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
-    // }
+    for (auto *slider : {&delaySlider, &dryWetSlider, &roomSizeSlider, &reverbDryWetSlider})
+    {
+        slider->setSliderStyle(juce::Slider::LinearHorizontal);
+        slider->setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
+    }
 
-    delaySlider.setSliderStyle(juce::Slider::LinearHorizontal);
     delaySlider.setRange(1.0, 1000.0, 1.0);
-    delaySlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
-
-    dryWetSlider.setSliderStyle(juce::Slider::LinearHorizontal);
     dryWetSlider.setRange(0.0, 1.0, 0.0);
-    dryWetSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
-
-    roomSizeSlider.setSliderStyle(juce::Slider::LinearHorizontal);
     roomSizeSlider.setRange(0.0, 1.0, 0.0);
-    roomSizeSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
-
-    reverbDryWetSlider.setSliderStyle(juce::Slider::LinearHorizontal);
     reverbDryWetSlider.setRange(0.0, 1.0, 0.0);
-    reverbDryWetSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
+
 }
 
 void FXView::paint(juce::Graphics &graphics)
@@ -40,6 +45,7 @@ void FXView::paint(juce::Graphics &graphics)
 void FXView::resized()
 {
     auto area = getLocalBounds().reduced(20);
+    effectSelector.setBounds(area.removeFromTop(40).removeFromLeft(180));
     cameraView.setBounds(area.removeFromTop(220));
     delaySlider.setBounds(area.removeFromTop(100));
     dryWetSlider.setBounds(area.removeFromTop(100));
@@ -65,4 +71,9 @@ juce::Slider &FXView::getRoomSizeSlider() noexcept
 juce::Slider &FXView::getReverbDryWetSlider() noexcept
 {
     return reverbDryWetSlider;
+}
+
+juce::ComboBox &FXView::getEffectSelector() noexcept
+{
+    return effectSelector;
 }

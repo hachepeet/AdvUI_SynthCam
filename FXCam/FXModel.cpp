@@ -9,10 +9,7 @@ void FXModel::prepareToPlay(double newSampleRate, int numChannels)
 {
     sampleRate = newSampleRate;
 
-    // delay things
     delay.prepareToPlay(newSampleRate, numChannels);
-
-    // reverb things
     reverb.prepareToPlay(newSampleRate, numChannels);
 
 }
@@ -25,11 +22,10 @@ void FXModel::render(juce::AudioBuffer<float> &buffer)
         return;
     }
 
-    // delay things
-    delay.render(buffer);
+    activeEffect = static_cast<int>(parameters.getRawParameterValue("activeEffect")->load());
 
-    // reverb things
-    reverb.render(buffer);
+    if (activeEffect == 0) delay.render(buffer);
+    else if (activeEffect == 1) reverb.render(buffer);
 
 }
 
