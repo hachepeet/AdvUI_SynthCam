@@ -15,8 +15,8 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor() :
 
 #endif
                                                          parameters(*this, nullptr, juce::Identifier("Sine Synth"),
-                                                                    {// in the tutorial the fq slider is from 50-5000 so that's what the range is here, default is 440
-                                                                     std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("frequency", 1), "Frequency", 50.0f, 5000.0f, 220.0f),
+                                                                    {// The frequency range follows the logarithmic hand and slider controls.
+                                                                     std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("frequency", 1), "Frequency", 100.0f, 400.0f, 220.0f),
                                                                      std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("waveform", 1), "Waveform", 0.0f, 4.0f, 0.0f)}),
                                                          model(parameters)
 {

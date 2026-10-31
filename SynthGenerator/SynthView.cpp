@@ -3,6 +3,7 @@
 
 SynthView::SynthView()
 {
+    addAndMakeVisible(cameraView);
     addAndMakeVisible(frequencySlider);
     addAndMakeVisible(waveformSlider);
 
@@ -12,8 +13,8 @@ SynthView::SynthView()
         slider->setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
     }
 
-    frequencySlider.setRange(50.0, 5000.0);
-    frequencySlider.setSkewFactorFromMidPoint(500.0);
+    frequencySlider.setRange(100.0, 400.0);
+    frequencySlider.setSkewFactorFromMidPoint(std::sqrt(100.0 * 400.0));
     waveformSlider.setRange(0.0, 4.0, 1.0);
     waveformSlider.setNumDecimalPlacesToDisplay(0);
     waveformSlider.setSliderSnapsToMousePosition(false);
@@ -27,6 +28,7 @@ void SynthView::paint(juce::Graphics &graphics)
 void SynthView::resized()
 {
     auto area = getLocalBounds().reduced(20);
+    cameraView.setBounds(area.removeFromTop(220));
     frequencySlider.setBounds(area.removeFromTop(100));
     waveformSlider.setBounds(area.removeFromTop(100));
 }
@@ -39,4 +41,9 @@ juce::Slider &SynthView::getFrequencySlider() noexcept
 juce::Slider &SynthView::getWaveformSlider() noexcept
 {
     return waveformSlider;
+}
+
+void SynthView::setHandPositionCallback(std::function<void(float, float)> callback)
+{
+    cameraView.setHandPositionCallback(std::move(callback));
 }
