@@ -18,6 +18,7 @@ public:
     juce::Slider &getReverbDryWetSlider() noexcept;
 
     juce::ComboBox &getEffectSelector() noexcept;
+    void setHandPositionCallback(std::function<void(float, float)> callback);
 
 private:
     CameraView cameraView;

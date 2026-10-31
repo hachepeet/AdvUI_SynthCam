@@ -77,3 +77,8 @@ juce::ComboBox &FXView::getEffectSelector() noexcept
 {
     return effectSelector;
 }
+
+void FXView::setHandPositionCallback(std::function<void(float, float)> callback)
+{
+    cameraView.setHandPositionCallback(std::move(callback));
+}

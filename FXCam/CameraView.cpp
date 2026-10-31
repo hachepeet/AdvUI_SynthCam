@@ -48,6 +48,11 @@ CameraView::~CameraView()
     cameraDevice.reset();
 }
 
+void CameraView::setHandPositionCallback(std::function<void(float, float)> callback)
+{
+    handPositionCallback = std::move(callback);
+}
+
 void CameraView::paint(juce::Graphics &graphics)
 {
     graphics.fillAll(SynthCamTheme::backgroundColour);
@@ -328,4 +333,8 @@ void CameraView::updateHandPosition()
     const auto y = values[1].getDoubleValue();
     handPositionLabel.setText("Right hand: X " + juce::String(x, 2) + "  Y " + juce::String(y, 2),
                               juce::dontSendNotification);
+
+    if (handPositionCallback != nullptr)
+        handPositionCallback(static_cast<float>(juce::jlimit(0.0, 1.0, x)),
+                             static_cast<float>(juce::jlimit(0.0, 1.0, y)));
 }

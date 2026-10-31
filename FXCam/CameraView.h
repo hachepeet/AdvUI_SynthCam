@@ -3,6 +3,7 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_video/juce_video.h>
 #include <atomic>
+#include <functional>
 
 // Inspired by https://github.com/juce-framework/JUCE/blob/29396c22c93392d6738e021b83196283d6e4d850/examples/GUI/CameraDemo.h
 
@@ -13,6 +14,8 @@ class CameraView final : public juce::Component,
 public:
     CameraView();
     ~CameraView() override;
+
+    void setHandPositionCallback(std::function<void(float, float)> callback);
 
     void paint(juce::Graphics &) override;
     void resized() override;
@@ -39,6 +42,7 @@ private:
     juce::ComboBox cameraSelector{"Camera"};
     juce::TextButton snapshotButton{"Take snapshot"};
     juce::Label handPositionLabel;
+    std::function<void(float, float)> handPositionCallback;
     juce::String statusText;
     std::atomic<int> receivedFrameCount{0};
     std::atomic<int> writtenFrameCount{0};

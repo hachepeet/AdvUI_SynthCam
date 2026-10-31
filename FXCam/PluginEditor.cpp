@@ -13,6 +13,32 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudi
     reverbDryWetAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "reverbDryWet", view->getReverbDryWetSlider());
     effectAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processorRef.getModel().getParameters(), "activeEffect", view->getEffectSelector());
 
+    view->setHandPositionCallback([this](float x, float y)
+    {
+        auto &parameters = processorRef.getModel().getParameters();
+        const auto activeEffect = static_cast<int>(parameters.getRawParameterValue("activeEffect")->load());
+
+        auto setParameter = [&parameters](const juce::String &parameterId, float value)
+        {
+            if (auto *parameter = dynamic_cast<juce::RangedAudioParameter *>(
+                    parameters.getParameter(parameterId)))
+            {
+                parameter->setValueNotifyingHost(parameter->convertTo0to1(value));
+            }
+        };
+
+        if (activeEffect == 0)
+        {
+            setParameter("delayTime", juce::jmap(x, 1.0f, 1000.0f));
+            setParameter("dryWet", y);
+        }
+        else if (activeEffect == 1)
+        {
+            setParameter("roomSize", x);
+            setParameter("reverbDryWet", y);
+        }
+    });
+
     setSize(800, 800);
 }
 
