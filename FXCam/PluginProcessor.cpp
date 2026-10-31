@@ -18,7 +18,8 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor() :
                                                                     {std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("delayTime", 1), "DelayTime", 1.0f, 1000.0f, 250.0f),
                                                                     std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("dryWet", 1), "DryWet", 0.0f, 1.0f, 0.0f),
                                                                     std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("roomSize",1), "RoomSize", 0.0f, 1.0f, 0.5f),
-                                                                    std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("reverbDryWet",1), "ReverbDryWet", 0.0f, 1.0f, 0.5f)}),
+                                                                    std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("reverbDryWet",1), "ReverbDryWet", 0.0f, 1.0f, 0.5f),
+                                                                    std::make_unique<juce::AudioParameterChoice>(juce::ParameterID("activeEffect",1), "ActiveEffect", juce::StringArray{"Delay","Reverb"}, 0)}),
                                                          model(parameters)
 {
 }

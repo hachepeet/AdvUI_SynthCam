@@ -19,6 +19,7 @@ private:
     double sampleRate = 0.0;
     Delay delay;
     ReverbFX reverb;
+    int activeEffect;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FXModel)
 };
