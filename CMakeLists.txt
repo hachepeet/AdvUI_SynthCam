@@ -78,10 +78,12 @@ target_sources(SynthGenerator
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/PluginEditor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/PluginProcessor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthModel.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthView.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthView.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraView.cpp)
 
 target_include_directories(SynthGenerator
     PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/FXCam
         ${CMAKE_CURRENT_SOURCE_DIR}/Shared)
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
@@ -96,7 +98,9 @@ target_compile_definitions(SynthGenerator
         # JUCE_WEB_BROWSER and JUCE_USE_CURL would be on by default, but you might not need them.
         JUCE_WEB_BROWSER=0  # If you remove this, add `NEEDS_WEB_BROWSER TRUE` to the `juce_add_plugin` call
         JUCE_USE_CURL=0     # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_plugin` call
-        JUCE_VST3_CAN_REPLACE_VST2=0)
+        JUCE_VST3_CAN_REPLACE_VST2=0
+        JUCE_USE_CAMERA=1
+        SYNTHCAM_HAND_TRACKER_SCRIPT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Shared/hand_tracker.py")
 
 # If your target needs extra binary assets, you can add them here. The first argument is the name of
 # a new static library target that will include all the binary resources. There is an optional
@@ -118,6 +122,7 @@ target_link_libraries(SynthGenerator
         # AudioPluginData           # If we'd created a binary data target, we'd link to it here
         juce::juce_audio_utils
         juce::juce_audio_processors
+        juce::juce_video
     PUBLIC
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
@@ -164,7 +169,7 @@ target_sources(FXCam
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/PluginProcessor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FXModel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FXView.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/CameraView.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraView.cpp)
 
 target_include_directories(FXCam
     PRIVATE
@@ -184,7 +189,7 @@ target_compile_definitions(FXCam
         JUCE_USE_CURL=0     # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_plugin` call
         JUCE_VST3_CAN_REPLACE_VST2=0
         JUCE_USE_CAMERA=1
-        SYNTHCAM_HAND_TRACKER_SCRIPT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/FXCam/hand_tracker.py")
+        SYNTHCAM_HAND_TRACKER_SCRIPT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/Shared/hand_tracker.py")
 
 # If your target needs extra binary assets, you can add them here. The first argument is the name of
 # a new static library target that will include all the binary resources. There is an optional

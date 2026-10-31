@@ -1,7 +1,7 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "CameraView.h"
+#include "../Shared/CameraView.h"
 #include <functional>
 
 class FXView final : public juce::Component
