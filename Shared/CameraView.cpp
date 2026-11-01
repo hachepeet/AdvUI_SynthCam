@@ -243,7 +243,7 @@ void CameraView::stopHandTracker()
 
     if (handTrackerDirectory.isDirectory())
         handTrackerDirectory.deleteRecursively();
-    handTrackerDirectory = {};
+    handTrackerDirectory = juce::File();
 }
 
 void CameraView::submitFrameToHandTracker(const juce::Image &image)
