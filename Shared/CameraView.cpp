@@ -335,6 +335,10 @@ void CameraView::updateHandPosition()
                               juce::dontSendNotification);
 
     if (handPositionCallback != nullptr)
-        handPositionCallback(static_cast<float>(juce::jlimit(0.0, 1.0, x)),
-                             static_cast<float>(juce::jlimit(0.0, 1.0, y)));
+    {
+        const auto flippedX = 1.0 - juce::jlimit(0.0, 1.0, x);
+        const auto flippedY = 1.0 - juce::jlimit(0.0, 1.0, y);
+        handPositionCallback(static_cast<float>(flippedX),
+                             static_cast<float>(flippedY));
+    }
 }
