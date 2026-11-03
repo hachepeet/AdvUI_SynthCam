@@ -2,6 +2,11 @@
 
 #include "Theme.h"
 
+namespace
+{
+constexpr auto cameraAspectRatio = 16.0f / 9.0f;
+}
+
 // Inspired by https://github.com/juce-framework/JUCE/blob/29396c22c93392d6738e021b83196283d6e4d850/examples/GUI/CameraDemo.h
 
 CameraView::CameraView()
@@ -10,6 +15,8 @@ CameraView::CameraView()
     addAndMakeVisible(snapshotButton);
     addAndMakeVisible(lastSnapshot);
     addAndMakeVisible(handPositionLabel);
+    addAndMakeVisible(handPositionMarker);
+    handPositionMarker.setVisible(false);
     lastSnapshot.setVisible(false);
     handPositionLabel.setJustificationType(juce::Justification::centredLeft);
     handPositionLabel.setColour(juce::Label::textColourId, juce::Colours::white);
@@ -77,6 +84,14 @@ void CameraView::resized()
 
     auto previewArea = getLocalBounds().reduced(1);
     previewArea.removeFromTop(31);
+    auto cameraArea = previewArea.toFloat();
+    if (cameraArea.getAspectRatio() > cameraAspectRatio)
+        cameraArea.setWidth(cameraArea.getHeight() * cameraAspectRatio);
+    else
+        cameraArea.setHeight(cameraArea.getWidth() / cameraAspectRatio);
+    cameraArea.setCentre(previewArea.getCentre().toFloat());
+    const auto cameraBounds = cameraArea.toNearestInt();
+
     if (cameraPreview != nullptr)
     {
         cameraPreview->setBounds(previewArea);
@@ -85,6 +100,12 @@ void CameraView::resized()
             cameraPreview->getWidth() * 0.5f,
             cameraPreview->getHeight() * 0.5f));
     }
+
+    constexpr auto markerSize = 16;
+    const auto markerX = cameraBounds.getX() + juce::roundToInt(handPosition.x * cameraBounds.getWidth()) - markerSize / 2;
+    const auto markerY = cameraBounds.getY() + juce::roundToInt(handPosition.y * cameraBounds.getHeight()) - markerSize / 2;
+    handPositionMarker.setBounds(markerX, markerY, markerSize, markerSize);
+    handPositionMarker.toFront(false);
 
     lastSnapshot.setBounds(previewArea);
     lastSnapshot.setTransform(juce::AffineTransform::scale(
@@ -116,6 +137,7 @@ void CameraView::cameraChanged()
     lastSnapshot.setVisible(false);
     snapshotButton.setEnabled(false);
     handPositionLabel.setText("Right hand: not detected", juce::dontSendNotification);
+    handPositionMarker.setVisible(false);
     statusText = "No camera selected";
 
     if (cameraSelector.getSelectedId() > 1)
@@ -290,6 +312,7 @@ void CameraView::updateHandPosition()
         if (status.isNotEmpty() && status != "ready")
         {
             handPositionLabel.setText(status, juce::dontSendNotification);
+            handPositionMarker.setVisible(false);
             return;
         }
     }
@@ -297,6 +320,7 @@ void CameraView::updateHandPosition()
     if (!handTracker->isRunning())
     {
         handPositionLabel.setText("Right hand: tracker stopped", juce::dontSendNotification);
+        handPositionMarker.setVisible(false);
         return;
     }
 
@@ -307,6 +331,7 @@ void CameraView::updateHandPosition()
     {
         handPositionLabel.setText("Right hand: waiting (callbacks " + juce::String(receivedFrameCount.load()) + ", writes " + juce::String(writtenFrameCount.load()) + ", failures " + juce::String(failedFrameCount.load()) + ")",
                                   juce::dontSendNotification);
+        handPositionMarker.setVisible(false);
         return;
     }
 
@@ -322,12 +347,16 @@ void CameraView::updateHandPosition()
                               .trim();
         handPositionLabel.setText("Right hand: not detected" + (diagnostic.isNotEmpty() ? " (" + diagnostic + ")" : ""),
                                   juce::dontSendNotification);
+        handPositionMarker.setVisible(false);
         return;
     }
 
     const auto values = juce::StringArray::fromTokens(position, ",", "");
     if (values.size() != 2)
+    {
+        handPositionMarker.setVisible(false);
         return;
+    }
 
     const auto x = values[0].getDoubleValue();
     const auto y = values[1].getDoubleValue();
@@ -337,8 +366,11 @@ void CameraView::updateHandPosition()
     if (handPositionCallback != nullptr)
     {
         const auto flippedX = 1.0 - juce::jlimit(0.0, 1.0, x);
-        const auto flippedY = 1.0 - juce::jlimit(0.0, 1.0, y);
+        const auto cameraY = juce::jlimit(0.0, 1.0, y);
+        handPosition = {static_cast<float>(flippedX), static_cast<float>(cameraY)};
+        handPositionMarker.setVisible(true);
+        resized();
         handPositionCallback(static_cast<float>(flippedX),
-                             static_cast<float>(flippedY));
+                             static_cast<float>(cameraY));
     }
 }

@@ -7,6 +7,16 @@
 
 // Inspired by https://github.com/juce-framework/JUCE/blob/29396c22c93392d6738e021b83196283d6e4d850/examples/GUI/CameraDemo.h
 
+class HandPositionMarker final : public juce::Component
+{
+public:
+    void paint(juce::Graphics &graphics) override
+    {
+        graphics.setColour(juce::Colours::red);
+        graphics.drawEllipse(getLocalBounds().toFloat().reduced(1.0f), 2.0f);
+    }
+};
+
 class CameraView final : public juce::Component,
                          private juce::Timer,
                          private juce::CameraDevice::Listener
@@ -42,7 +52,9 @@ private:
     juce::ComboBox cameraSelector{"Camera"};
     juce::TextButton snapshotButton{"Take snapshot"};
     juce::Label handPositionLabel;
+    HandPositionMarker handPositionMarker;
     std::function<void(float, float)> handPositionCallback;
+    juce::Point<float> handPosition;
     juce::String statusText;
     std::atomic<int> receivedFrameCount{0};
     std::atomic<int> writtenFrameCount{0};
