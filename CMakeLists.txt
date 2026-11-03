@@ -170,6 +170,7 @@ target_sources(FXCam
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/PluginEditor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/PluginProcessor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FXModel.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FX.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FXView.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraModel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraView.cpp

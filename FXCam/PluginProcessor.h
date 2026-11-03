@@ -44,8 +44,7 @@ public:
     void setStateInformation(const void *data, int sizeInBytes) override;
 
     // double phase = 0.0;
-    juce::AudioProcessorValueTreeState &getParameters() { return parameters; }
-    FXModel &getModel() noexcept { return model; }
+    juce::AudioProcessorValueTreeState &getParameters() noexcept { return parameters; }
 
 private:
     juce::AudioProcessorValueTreeState parameters;

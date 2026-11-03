@@ -4,18 +4,18 @@
 AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudioProcessor &p)
     : AudioProcessorEditor(&p), processorRef(p)
 {
-    view = std::make_unique<FXView>();
+    view = std::make_unique<FX>();
     addAndMakeVisible(*view);
 
-    delayAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "delayTime", view->getDelaySlider());
-    dryWetAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "dryWet", view->getDryWetSlider());
-    roomSizeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "roomSize", view->getRoomSizeSlider());
-    reverbDryWetAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "reverbDryWet", view->getReverbDryWetSlider());
-    effectAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processorRef.getModel().getParameters(), "activeEffect", view->getEffectSelector());
+    delayAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getParameters(), "delayTime", view->getDelaySlider());
+    dryWetAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getParameters(), "dryWet", view->getDryWetSlider());
+    roomSizeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getParameters(), "roomSize", view->getRoomSizeSlider());
+    reverbDryWetAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getParameters(), "reverbDryWet", view->getReverbDryWetSlider());
+    effectAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processorRef.getParameters(), "activeEffect", view->getEffectSelector());
 
     view->setHandPositionCallback([this](float x, float y, bool, bool)
     {
-        auto &parameters = processorRef.getModel().getParameters();
+        auto &parameters = processorRef.getParameters();
         const auto activeEffect = static_cast<int>(parameters.getRawParameterValue("activeEffect")->load());
 
         auto setParameter = [&parameters](const juce::String &parameterId, float value)
