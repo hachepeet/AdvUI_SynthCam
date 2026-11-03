@@ -24,8 +24,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudi
             }
         };
 
-        constexpr auto minimumFrequency = 100.0f;
-        constexpr auto maximumFrequency = 400.0f;
+        constexpr auto minimumFrequency = 220.0f;
+        constexpr auto maximumFrequency = 880.0f;
         const auto frequency = minimumFrequency
                              * std::pow(maximumFrequency / minimumFrequency, x);
         setParameter("frequency", frequency);

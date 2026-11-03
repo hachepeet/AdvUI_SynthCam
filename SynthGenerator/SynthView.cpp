@@ -13,8 +13,8 @@ SynthView::SynthView()
         slider->setTextBoxStyle(juce::Slider::TextBoxRight, false, 80, 20);
     }
 
-    frequencySlider.setRange(100.0, 400.0);
-    frequencySlider.setSkewFactorFromMidPoint(std::sqrt(100.0 * 400.0));
+    frequencySlider.setRange(220.0, 880.0);
+    frequencySlider.setSkewFactorFromMidPoint(std::sqrt(220.0 * 880.0));
     waveformSlider.setRange(0.0, 4.0, 1.0);
     waveformSlider.setNumDecimalPlacesToDisplay(0);
     waveformSlider.setSliderSnapsToMousePosition(false);

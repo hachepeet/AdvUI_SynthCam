@@ -16,7 +16,7 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor() :
 #endif
                                                          parameters(*this, nullptr, juce::Identifier("Sine Synth"),
                                                                     {// The frequency range follows the logarithmic hand and slider controls.
-                                                                     std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("frequency", 1), "Frequency", 100.0f, 400.0f, 220.0f),
+                                                                     std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("frequency", 1), "Frequency", 220.0f, 880.0f, 440.0f),
                                                                      std::make_unique<juce::AudioParameterFloat>(juce::ParameterID("waveform", 1), "Waveform", 0.0f, 4.0f, 0.0f)}),
                                                          model(parameters)
 {
