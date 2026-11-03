@@ -14,7 +14,7 @@ public:
 
     juce::Slider &getFrequencySlider() noexcept;
     juce::Slider &getWaveformSlider() noexcept;
-    void setHandPositionCallback(std::function<void(float, float)> callback);
+    void setHandPositionCallback(std::function<void(float, float, bool, bool)> callback);
 
 private:
     CameraView cameraView;

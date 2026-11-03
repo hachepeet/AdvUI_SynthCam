@@ -18,6 +18,7 @@ Temporary camera screenshots are saved in order to track the right hand.
 """
 
 from pathlib import Path
+import math
 import sys
 import time
 
@@ -26,6 +27,19 @@ def write_status(path: Path, message: str) -> None:
     temporary = path.with_suffix(".tmp")
     temporary.write_text(message, encoding="utf-8")
     temporary.replace(path)
+
+def is_hand_closed(hand_landmarks) -> bool:
+    landmarks = hand_landmarks.landmark
+    wrist = landmarks[0]
+    closed_fingers = 0
+    for tip_index, pip_index in ((8, 6), (12, 10), (16, 14), (20, 18)):
+        tip = landmarks[tip_index]
+        pip = landmarks[pip_index]
+        tip_distance = math.dist((tip.x, tip.y), (wrist.x, wrist.y))
+        pip_distance = math.dist((pip.x, pip.y), (wrist.x, wrist.y))
+        if tip_distance < pip_distance:
+            closed_fingers += 1
+    return closed_fingers >= 3
 
 
 def main() -> int:
@@ -84,6 +98,7 @@ def main() -> int:
             mirrored_frame = cv2.flip(frame, 1)
             results = hands.process(cv2.cvtColor(mirrored_frame, cv2.COLOR_BGR2RGB))
             right_hand = None
+            right_hand_landmarks = None
             labels = []
             if results.multi_hand_landmarks and results.multi_handedness:
                 for landmarks, handedness in zip(
@@ -92,6 +107,7 @@ def main() -> int:
                     label = handedness.classification[0].label
                     labels.append(label)
                     if label == "Right":
+                        right_hand_landmarks = landmarks
                         right_hand = landmarks.landmark[9]
                         break
 
@@ -104,7 +120,7 @@ def main() -> int:
             result = "none"
             if right_hand is not None:
                 x = 1.0 - right_hand.x
-                result = f"{x:.4f},{right_hand.y:.4f}"
+                result = f"{x:.4f},{right_hand.y:.4f},{int(is_hand_closed(right_hand_landmarks))}"
 
             result_path = directory / f"right_hand_{processed_frames:08d}.txt"
             result_path.write_text(result, encoding="ascii")

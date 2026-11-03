@@ -43,7 +43,7 @@ juce::Slider &SynthView::getWaveformSlider() noexcept
     return waveformSlider;
 }
 
-void SynthView::setHandPositionCallback(std::function<void(float, float)> callback)
+void SynthView::setHandPositionCallback(std::function<void(float, float, bool, bool)> callback)
 {
     cameraView.setHandPositionCallback(std::move(callback));
 }

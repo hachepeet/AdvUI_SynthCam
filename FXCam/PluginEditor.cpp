@@ -13,7 +13,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudi
     reverbDryWetAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "reverbDryWet", view->getReverbDryWetSlider());
     effectAttachment = std::make_unique<juce::AudioProcessorValueTreeState::ComboBoxAttachment>(processorRef.getModel().getParameters(), "activeEffect", view->getEffectSelector());
 
-    view->setHandPositionCallback([this](float x, float y)
+    view->setHandPositionCallback([this](float x, float y, bool, bool)
     {
         auto &parameters = processorRef.getModel().getParameters();
         const auto activeEffect = static_cast<int>(parameters.getRawParameterValue("activeEffect")->load());

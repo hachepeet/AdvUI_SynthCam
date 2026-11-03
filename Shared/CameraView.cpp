@@ -55,7 +55,7 @@ CameraView::~CameraView()
     cameraDevice.reset();
 }
 
-void CameraView::setHandPositionCallback(std::function<void(float, float)> callback)
+void CameraView::setHandPositionCallback(std::function<void(float, float, bool, bool)> callback)
 {
     handPositionCallback = std::move(callback);
 }
@@ -348,11 +348,13 @@ void CameraView::updateHandPosition()
         handPositionLabel.setText("Right hand: not detected" + (diagnostic.isNotEmpty() ? " (" + diagnostic + ")" : ""),
                                   juce::dontSendNotification);
         handPositionMarker.setVisible(false);
+        if (handPositionCallback != nullptr)
+            handPositionCallback(handPosition.x, handPosition.y, false, false);
         return;
     }
 
     const auto values = juce::StringArray::fromTokens(position, ",", "");
-    if (values.size() != 2)
+    if (values.size() != 3)
     {
         handPositionMarker.setVisible(false);
         return;
@@ -360,6 +362,7 @@ void CameraView::updateHandPosition()
 
     const auto x = values[0].getDoubleValue();
     const auto y = values[1].getDoubleValue();
+    const auto handIsClosed = values[2].getIntValue() != 0;
     handPositionLabel.setText("Right hand: X " + juce::String(x, 2) + "  Y " + juce::String(y, 2),
                               juce::dontSendNotification);
 
@@ -371,6 +374,8 @@ void CameraView::updateHandPosition()
         handPositionMarker.setVisible(true);
         resized();
         handPositionCallback(static_cast<float>(flippedX),
-                             static_cast<float>(cameraY));
+                             static_cast<float>(cameraY),
+                             handIsClosed,
+                             true);
     }
 }

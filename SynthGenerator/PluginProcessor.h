@@ -2,6 +2,7 @@
 
 #include <juce_audio_processors/juce_audio_processors.h>
 #include "SynthModel.h"
+#include <atomic>
 
 //==============================================================================
 class AudioPluginAudioProcessor final : public juce::AudioProcessor
@@ -46,10 +47,12 @@ public:
     // double phase = 0.0;
     juce::AudioProcessorValueTreeState &getParameters() { return parameters; }
     SynthModel &getModel() noexcept { return model; }
+    void setHandClosed(bool shouldMute) noexcept { handClosed.store(shouldMute); }
 
 private:
     juce::AudioProcessorValueTreeState parameters;
     SynthModel model;
+    std::atomic<bool> handClosed{true};
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessor)
 };

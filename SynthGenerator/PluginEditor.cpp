@@ -11,8 +11,9 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudi
     fqAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "frequency", view->getFrequencySlider());
     waveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "waveform", view->getWaveformSlider());
 
-    view->setHandPositionCallback([this](float x, float y)
+    view->setHandPositionCallback([this](float x, float y, bool handIsClosed, bool handIsDetected)
     {
+        processorRef.setHandClosed(handIsClosed || !handIsDetected);
         auto &parameters = processorRef.getModel().getParameters();
 
         auto setParameter = [&parameters](const juce::String &parameterId, float value)

@@ -135,6 +135,12 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
                                              juce::MidiBuffer &midiMessages)
 {
     juce::ignoreUnused(midiMessages);
+    if (handClosed.load())
+    {
+        buffer.clear();
+        return;
+    }
+
     auto frequency = parameters.getRawParameterValue("frequency")->load();
     auto waveform = parameters.getRawParameterValue("waveform")->load();
     model.render(buffer, frequency, waveform);

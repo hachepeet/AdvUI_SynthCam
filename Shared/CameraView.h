@@ -25,7 +25,7 @@ public:
     CameraView();
     ~CameraView() override;
 
-    void setHandPositionCallback(std::function<void(float, float)> callback);
+    void setHandPositionCallback(std::function<void(float, float, bool, bool)> callback);
 
     void paint(juce::Graphics &) override;
     void resized() override;
@@ -53,7 +53,7 @@ private:
     juce::TextButton snapshotButton{"Take snapshot"};
     juce::Label handPositionLabel;
     HandPositionMarker handPositionMarker;
-    std::function<void(float, float)> handPositionCallback;
+    std::function<void(float, float, bool, bool)> handPositionCallback;
     juce::Point<float> handPosition;
     juce::String statusText;
     std::atomic<int> receivedFrameCount{0};
