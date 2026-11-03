@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PluginProcessor.h"
-#include "SynthView.h"
+#include "Synth.h"
 
 class AudioPluginAudioProcessorEditor final : public juce::AudioProcessorEditor
 {
@@ -14,7 +14,7 @@ public:
 private:
     // The editor coordinates the model and view; the view owns presentation.
     AudioPluginAudioProcessor &processorRef;
-    std::unique_ptr<SynthView> view;
+    std::unique_ptr<Synth> view;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> fqAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> waveAttachment;
 

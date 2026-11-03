@@ -78,6 +78,7 @@ target_sources(SynthGenerator
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/PluginEditor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/PluginProcessor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthModel.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/Synth.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthView.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraModel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraView.cpp

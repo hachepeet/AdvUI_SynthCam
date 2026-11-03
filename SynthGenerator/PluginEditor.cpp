@@ -5,16 +5,16 @@
 AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudioProcessor &p)
     : AudioProcessorEditor(&p), processorRef(p)
 {
-    view = std::make_unique<SynthView>();
+    view = std::make_unique<Synth>();
     addAndMakeVisible(*view);
 
-    fqAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "frequency", view->getFrequencySlider());
-    waveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getModel().getParameters(), "waveform", view->getWaveformSlider());
+    fqAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getParameters(), "frequency", view->getFrequencySlider());
+    waveAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processorRef.getParameters(), "waveform", view->getWaveformSlider());
 
     view->setHandPositionCallback([this](float x, float y, bool handIsClosed, bool handIsDetected)
     {
         processorRef.setHandClosed(handIsClosed || !handIsDetected);
-        auto &parameters = processorRef.getModel().getParameters();
+        auto &parameters = processorRef.getParameters();
 
         auto setParameter = [&parameters](const juce::String &parameterId, float value)
         {
