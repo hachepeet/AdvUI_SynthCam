@@ -79,7 +79,9 @@ target_sources(SynthGenerator
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/PluginProcessor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthModel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/SynthGenerator/SynthView.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraView.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraModel.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraView.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/Camera.cpp)
 
 target_include_directories(SynthGenerator
     PRIVATE
@@ -169,7 +171,9 @@ target_sources(FXCam
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/PluginProcessor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FXModel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/FXCam/FXView.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraView.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraModel.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/CameraView.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/Shared/Camera.cpp)
 
 target_include_directories(FXCam
     PRIVATE

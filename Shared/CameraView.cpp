@@ -50,7 +50,6 @@ CameraView::~CameraView()
     stopTimer();
     if (cameraDevice != nullptr)
         cameraDevice->removeListener(this);
-    stopHandTracker();
     cameraPreview.reset();
     cameraDevice.reset();
 }
@@ -131,7 +130,7 @@ void CameraView::cameraChanged()
     stopTimer();
     if (cameraDevice != nullptr)
         cameraDevice->removeListener(this);
-    stopHandTracker();
+    cameraModel.stopHandTracker();
     cameraPreview.reset();
     cameraDevice.reset();
     lastSnapshot.setVisible(false);
@@ -185,7 +184,13 @@ void CameraView::cameraDeviceOpenResult(juce::CameraDevice *device,
     cameraDevice->addListener(this);
     handPositionLabel.toFront(false);
     snapshotButton.setEnabled(true);
-    startHandTracker();
+    if (!cameraModel.startHandTracker())
+    {
+        handPositionLabel.setText("Right hand: tracker unavailable", juce::dontSendNotification);
+        return;
+    }
+
+    startTimer(100);
     statusText.clear();
     resized();
     repaint();
@@ -223,129 +228,45 @@ void CameraView::timerCallback()
 
 void CameraView::imageReceived(const juce::Image &image)
 {
-    ++receivedFrameCount;
-    submitFrameToHandTracker(image);
+    cameraModel.submitFrame(image);
 }
 
-// Frames management was written with the help of GitHub Copilot
-void CameraView::startHandTracker()
-{
-    stopHandTracker();
-
-    handTrackerDirectory = juce::File::getSpecialLocation(juce::File::tempDirectory)
-                               .getChildFile("synthcam-hand-tracking");
-    handTrackerDirectory.createDirectory();
-    handTrackerDirectory.getChildFile("status.txt").deleteFile();
-    receivedFrameCount = 0;
-    writtenFrameCount = 0;
-    failedFrameCount = 0;
-    frameSequence = 0;
-
-    handTracker = std::make_unique<juce::ChildProcess>();
-    juce::StringArray arguments{"python", "-u", SYNTHCAM_HAND_TRACKER_SCRIPT_PATH,
-                                handTrackerDirectory.getFullPathName()};
-    if (!handTracker->start(arguments, juce::ChildProcess::wantStdErr))
-    {
-        handTracker.reset();
-        handPositionLabel.setText("Right hand: tracker unavailable", juce::dontSendNotification);
-        return;
-    }
-
-    startTimer(100);
-}
-
-void CameraView::stopHandTracker()
-{
-    if (handTracker != nullptr)
-    {
-        if (handTracker->isRunning())
-            handTracker->kill();
-        handTracker.reset();
-    }
-
-    if (handTrackerDirectory.isDirectory())
-        handTrackerDirectory.deleteRecursively();
-    handTrackerDirectory = juce::File();
-}
-
-void CameraView::submitFrameToHandTracker(const juce::Image &image)
-{
-    if (handTracker == nullptr || !handTracker->isRunning() || !image.isValid())
-        return;
-
-    const auto sequence = ++frameSequence;
-    const auto frame = handTrackerDirectory.getChildFile("frame_" + juce::String(sequence) + ".jpg");
-    const auto temporaryFrame = handTrackerDirectory.getChildFile("frame_" + juce::String(sequence) + ".tmp");
-    bool written = false;
-    {
-        std::unique_ptr<juce::FileOutputStream> output(temporaryFrame.createOutputStream());
-        if (output != nullptr)
-        {
-            juce::JPEGImageFormat jpeg;
-            written = jpeg.writeImageToStream(image, *output);
-            output->flush();
-        }
-    }
-
-    if (written && temporaryFrame.moveFileTo(frame))
-    {
-        ++writtenFrameCount;
-    }
-    else
-    {
-        temporaryFrame.deleteFile();
-        frame.deleteFile();
-        ++failedFrameCount;
-    }
-}
-
-// Debugging and diagnostics were written with the help of GitHub Copilot
 void CameraView::updateHandPosition()
 {
-    if (handTracker == nullptr)
-        return;
+    const auto state = cameraModel.pollHandState();
+    using Status = CameraModel::HandState::Status;
 
-    const auto statusFile = handTrackerDirectory.getChildFile("status.txt");
-    if (statusFile.existsAsFile())
+    if (state.status == Status::unavailable)
     {
-        const auto status = statusFile.loadFileAsString().trim();
-        if (status.isNotEmpty() && status != "ready")
-        {
-            handPositionLabel.setText(status, juce::dontSendNotification);
-            handPositionMarker.setVisible(false);
-            return;
-        }
+        handPositionLabel.setText(state.diagnostic.isNotEmpty()
+                                      ? state.diagnostic
+                                      : "Right hand: tracker unavailable",
+                                  juce::dontSendNotification);
+        handPositionMarker.setVisible(false);
+        return;
     }
 
-    if (!handTracker->isRunning())
+    if (state.status == Status::stopped)
     {
         handPositionLabel.setText("Right hand: tracker stopped", juce::dontSendNotification);
         handPositionMarker.setVisible(false);
         return;
     }
 
-    juce::Array<juce::File> positionFiles;
-    handTrackerDirectory.findChildFiles(positionFiles, juce::File::findFiles,
-                                        false, "right_hand_*.txt");
-    if (positionFiles.isEmpty())
+    if (state.status == Status::waiting)
     {
-        handPositionLabel.setText("Right hand: waiting (callbacks " + juce::String(receivedFrameCount.load()) + ", writes " + juce::String(writtenFrameCount.load()) + ", failures " + juce::String(failedFrameCount.load()) + ")",
+        handPositionLabel.setText("Right hand: waiting (callbacks " + juce::String(state.receivedFrames)
+                                      + ", writes " + juce::String(state.writtenFrames)
+                                      + ", failures " + juce::String(state.failedFrames) + ")",
                                   juce::dontSendNotification);
         handPositionMarker.setVisible(false);
         return;
     }
 
-    auto positionFile = positionFiles.getFirst();
-    for (const auto &candidate : positionFiles)
-        if (candidate.getFileName() > positionFile.getFileName())
-            positionFile = candidate;
-    const auto position = positionFile.loadFileAsString().trim();
-    if (position == "none")
+    if (state.status == Status::notDetected)
     {
-        auto diagnostic = handTrackerDirectory.getChildFile("diagnostics.txt")
-                              .loadFileAsString()
-                              .trim();
-        handPositionLabel.setText("Right hand: not detected" + (diagnostic.isNotEmpty() ? " (" + diagnostic + ")" : ""),
+        handPositionLabel.setText("Right hand: not detected"
+                                      + (state.diagnostic.isNotEmpty() ? " (" + state.diagnostic + ")" : ""),
                                   juce::dontSendNotification);
         handPositionMarker.setVisible(false);
         if (handPositionCallback != nullptr)
@@ -353,29 +274,12 @@ void CameraView::updateHandPosition()
         return;
     }
 
-    const auto values = juce::StringArray::fromTokens(position, ",", "");
-    if (values.size() != 3)
-    {
-        handPositionMarker.setVisible(false);
-        return;
-    }
-
-    const auto x = values[0].getDoubleValue();
-    const auto y = values[1].getDoubleValue();
-    const auto handIsClosed = values[2].getIntValue() != 0;
-    handPositionLabel.setText("Right hand: X " + juce::String(x, 2) + "  Y " + juce::String(y, 2),
+    handPosition = state.position;
+    handPositionLabel.setText("Right hand: X " + juce::String(handPosition.x, 2)
+                                  + "  Y " + juce::String(handPosition.y, 2),
                               juce::dontSendNotification);
-
+    handPositionMarker.setVisible(true);
+    resized();
     if (handPositionCallback != nullptr)
-    {
-        const auto flippedX = 1.0 - juce::jlimit(0.0, 1.0, x);
-        const auto cameraY = juce::jlimit(0.0, 1.0, y);
-        handPosition = {static_cast<float>(flippedX), static_cast<float>(cameraY)};
-        handPositionMarker.setVisible(true);
-        resized();
-        handPositionCallback(static_cast<float>(flippedX),
-                             static_cast<float>(cameraY),
-                             handIsClosed,
-                             true);
-    }
+        handPositionCallback(handPosition.x, handPosition.y, state.isClosed, true);
 }

@@ -3,7 +3,7 @@
 
 SynthView::SynthView()
 {
-    addAndMakeVisible(cameraView);
+    addAndMakeVisible(camera);
     addAndMakeVisible(frequencySlider);
     addAndMakeVisible(waveformSlider);
 
@@ -28,7 +28,7 @@ void SynthView::paint(juce::Graphics &graphics)
 void SynthView::resized()
 {
     auto area = getLocalBounds().reduced(20);
-    cameraView.setBounds(area.removeFromTop(220));
+    camera.setBounds(area.removeFromTop(220));
     frequencySlider.setBounds(area.removeFromTop(100));
     waveformSlider.setBounds(area.removeFromTop(100));
 }
@@ -45,5 +45,5 @@ juce::Slider &SynthView::getWaveformSlider() noexcept
 
 void SynthView::setHandPositionCallback(std::function<void(float, float, bool, bool)> callback)
 {
-    cameraView.setHandPositionCallback(std::move(callback));
+    camera.setHandPositionCallback(std::move(callback));
 }

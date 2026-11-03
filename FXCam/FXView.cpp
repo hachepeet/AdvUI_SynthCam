@@ -17,7 +17,7 @@ FXView::FXView()
         reverbDryWetSlider.setVisible(!delaySelected);
     };
 
-    addAndMakeVisible(cameraView);
+    addAndMakeVisible(camera);
 
     addAndMakeVisible(delaySlider);
     addAndMakeVisible(dryWetSlider);
@@ -46,7 +46,7 @@ void FXView::resized()
 {
     auto area = getLocalBounds().reduced(20);
     effectSelector.setBounds(area.removeFromTop(40).removeFromLeft(180));
-    cameraView.setBounds(area.removeFromTop(220));
+    camera.setBounds(area.removeFromTop(220));
     delaySlider.setBounds(area.removeFromTop(100));
     dryWetSlider.setBounds(area.removeFromTop(100));
     roomSizeSlider.setBounds(area.removeFromTop(100));
@@ -80,5 +80,5 @@ juce::ComboBox &FXView::getEffectSelector() noexcept
 
 void FXView::setHandPositionCallback(std::function<void(float, float, bool, bool)> callback)
 {
-    cameraView.setHandPositionCallback(std::move(callback));
+    camera.setHandPositionCallback(std::move(callback));
 }

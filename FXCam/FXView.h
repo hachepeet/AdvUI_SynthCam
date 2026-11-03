@@ -1,7 +1,7 @@
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>
-#include "../Shared/CameraView.h"
+#include "../Shared/Camera.h"
 #include <functional>
 
 class FXView final : public juce::Component
@@ -21,7 +21,7 @@ public:
     void setHandPositionCallback(std::function<void(float, float, bool, bool)> callback);
 
 private:
-    CameraView cameraView;
+    Camera camera;
     juce::Slider delaySlider;
     juce::Slider dryWetSlider;
     juce::Slider roomSizeSlider;
