@@ -75,11 +75,11 @@ void SynthView::resized()
 
     waveformSlider.setBounds(sliderBounds.getX(), sliderBounds.getY(), verticalSliderWidth, verticalSliderHeight);
     int interval = waveformSlider.getHeight() / 4;
-    sinLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY(), 70, 20);
-    sqLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + interval, 70, 20);
+    sawLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY(), 70, 20);
+    rampLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + interval, 70, 20);
     triLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + (2 * interval), 70, 20);
-    rampLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + (3 * interval), 70, 20);
-    sawLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getBottom() - 20 / 2, 70, 20);
+    sqLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + (3 * interval), 70, 20);
+    sinLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getBottom() - 20 / 2, 70, 20);
     waveAxisLabel.setBounds(waveformSlider.getX() - 150, waveformSlider.getY() + waveformSlider.getHeight() / 2 - 10, 100, 20);
 
     frequencySlider.setBounds(sliderBounds.getX() + verticalSliderWidth, sliderBounds.getBottom() - horizontalSliderHeight, horizontalSliderWidth, horizontalSliderHeight);
