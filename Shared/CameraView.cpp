@@ -21,6 +21,7 @@ CameraView::CameraView()
     handPositionLabel.setJustificationType(juce::Justification::centredLeft);
     handPositionLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     handPositionLabel.setColour(juce::Label::backgroundColourId, juce::Colours::black.withAlpha(0.75f));
+    handPositionLabel.setAlwaysOnTop(true);
     handPositionLabel.setText("Right hand: not detected", juce::dontSendNotification);
 
     snapshotButton.setEnabled(false);
@@ -182,7 +183,7 @@ void CameraView::cameraDeviceOpenResult(juce::CameraDevice *device,
     cameraPreview.reset(cameraDevice->createViewerComponent());
     addAndMakeVisible(*cameraPreview);
     cameraDevice->addListener(this);
-    handPositionLabel.toFront(false);
+    handPositionLabel.toFront(true);
     snapshotButton.setEnabled(true);
     if (!cameraModel.startHandTracker())
     {

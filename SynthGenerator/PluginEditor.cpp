@@ -33,7 +33,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudi
         setParameter("waveform", juce::jmap(y, 0.0f, 4.0f));
     });
 
-    setSize(400, 600);
+    setSize(800, 700);
 }
 
 AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor() = default;
