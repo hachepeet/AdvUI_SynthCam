@@ -21,6 +21,7 @@ public:
     void setHandPositionCallback(std::function<void(float, float, bool, bool)> callback);
 
 private:
+    juce::Label pluginTitle;
     Camera camera;
     juce::Slider delaySlider;
     juce::Slider dryWetSlider;
@@ -28,6 +29,20 @@ private:
     juce::Slider reverbDryWetSlider;
     juce::ComboBox effectSelector;
     bool delaySelected;
+
+    juce::Label delayMinLabel;
+    juce::Label delayMaxLabel;
+    juce::Label delayAxisLabel;
+    juce::Label dryWetMinLabel;
+    juce::Label dryWetMaxLabel;
+    juce::Label dryWetAxisLabel;
+
+    juce::Label roomMinLabel;
+    juce::Label roomMaxLabel;
+    juce::Label roomAxisLabel;
+    juce::Label revDWMinLabel;
+    juce::Label revDWMaxLabel;
+    juce::Label revDWAxisLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FXView)
 };

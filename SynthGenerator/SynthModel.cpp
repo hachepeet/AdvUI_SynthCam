@@ -17,17 +17,6 @@ void SynthModel::prepareToPlay(double newSampleRate, float frequency, int wavefo
 {
     this->sampleRate = newSampleRate;
 
-    // old code with just making 20 identical sine oscillators
-    // auto numberOfOscillators = 20;                                                 
-
-    // for (auto i = 0; i < numberOfOscillators; ++i){
-    //     auto* oscillator = new Oscillator(sineTable);                                                  
-    //     oscillator->setFrequency (frequency, (float) sampleRate);           
-    //     oscillators.add (oscillator);
-    // }
-
-    // level = 0.25f / (float) numberOfOscillators;  
-
     oscillators.clear();
     oscillators.add(new Oscillator(sineTable));
     oscillators.add(new Oscillator(triTable));
@@ -61,31 +50,6 @@ void SynthModel::render(juce::AudioBuffer<float> &buffer, float frequency, int w
         }
     }
 
-    // old wavetable code
-    // for (auto oscillatorIndex = 0; oscillatorIndex < oscillators.size(); ++oscillatorIndex){
-    //     auto* oscillator = oscillators.getUnchecked(oscillatorIndex);
-    //     oscillator->setFrequency(frequency, (float) sampleRate);
-    //     for (auto sample = 0; sample < buffer.getNumSamples(); ++sample){
-    //         auto levelSample = oscillator->getNextSample() * level;
-    //         for (auto channel = 0; channel < buffer.getNumChannels(); ++channel){
-    //             buffer.addSample(channel, sample, levelSample);
-    //         }
-    //     }
-    // }
-
-    // old sine wave code
-    // const auto frequencyInHz = static_cast<double>(*frequency);
-    // const auto level = static_cast<float>(*waveform);
-    // const auto angleDelta = frequencyInHz / sampleRate * juce::MathConstants<double>::twoPi;
-
-    // for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
-    // {
-    //     const auto currentSample = static_cast<float>(std::sin(currentAngle)) * level;
-    //     currentAngle += angleDelta;
-
-    //     for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
-    //         buffer.setSample(channel, sample, currentSample);
-    // }
 }
 
 void SynthModel::createSineWavetable() {
