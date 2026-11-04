@@ -9,7 +9,8 @@ public:
     explicit SynthModel(juce::AudioProcessorValueTreeState &parameters);
 
     void prepareToPlay(double newSampleRate, float frequency, int waveform);
-    void render(juce::AudioBuffer<float> &buffer, float frequency, int waveform);
+    void render(juce::AudioBuffer<float> &buffer, float frequency, int waveform,
+                float gainStart = 1.0f, float gainEnd = 1.0f, int activeSamples = -1);
     void createSineWavetable();
     void createTriWavetable();
     void createSquareWavetable();

@@ -41,7 +41,8 @@ void SynthModel::prepareToPlay(double newSampleRate, float frequency, int wavefo
 
 }
 
-void SynthModel::render(juce::AudioBuffer<float> &buffer, float frequency, int waveform)
+void SynthModel::render(juce::AudioBuffer<float> &buffer, float frequency, int waveform,
+                        float gainStart, float gainEnd, int activeSamples)
 {
     if (sampleRate <= 0.0 || buffer.getNumChannels() == 0)
     {
@@ -54,8 +55,17 @@ void SynthModel::render(juce::AudioBuffer<float> &buffer, float frequency, int w
     oscillator->setFrequency(frequency, (float) sampleRate);
     buffer.clear();
 
+    const auto samplesToRender = activeSamples < 0
+                                ? buffer.getNumSamples()
+                                : juce::jmin(activeSamples, buffer.getNumSamples());
+
     for (auto sample = 0; sample < buffer.getNumSamples(); ++sample){
-        auto currentSample = oscillator->getNextSample() * 0.25f;
+        const auto gain = sample < samplesToRender
+                            ? juce::jmap(static_cast<float>(sample),
+                                         0.0f, static_cast<float>(juce::jmax(1, samplesToRender - 1)),
+                                         gainStart, gainEnd)
+                            : 0.0f;
+        auto currentSample = oscillator->getNextSample() * 0.25f * gain;
         for (auto channel = 0; channel < buffer.getNumChannels(); ++channel){
             buffer.setSample(channel, sample, currentSample);
         }

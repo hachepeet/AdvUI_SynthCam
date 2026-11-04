@@ -49,10 +49,17 @@ public:
     void setHandClosed(bool shouldMute) noexcept { handClosed.store(shouldMute); }
 
 private:
+    static constexpr double attackTimeSeconds = 0.03;
+    static constexpr double releaseTimeSeconds = 0.03;
+
     juce::AudioProcessorValueTreeState parameters;
     SynthModel model;
     std::atomic<bool> handClosed{true};
+    bool wasHandClosed = true;
+    int attackSamplesRemaining = 0;
+    int attackSamplesTotal = 0;
+    int releaseSamplesRemaining = 0;
+    int releaseSamplesTotal = 0;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessor)
 };
- 

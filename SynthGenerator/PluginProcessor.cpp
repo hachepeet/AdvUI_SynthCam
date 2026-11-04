@@ -61,7 +61,7 @@ bool AudioPluginAudioProcessor::isMidiEffect() const
 
 double AudioPluginAudioProcessor::getTailLengthSeconds() const
 {
-    return 0.0;
+    return releaseTimeSeconds;
 }
 
 int AudioPluginAudioProcessor::getNumPrograms()
@@ -96,7 +96,12 @@ void AudioPluginAudioProcessor::prepareToPlay(double sampleRate, int samplesPerB
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
-    juce::ignoreUnused(sampleRate, samplesPerBlock);
+    juce::ignoreUnused(samplesPerBlock);
+    attackSamplesTotal = juce::jmax(1, juce::roundToInt(sampleRate * attackTimeSeconds));
+    releaseSamplesTotal = juce::jmax(1, juce::roundToInt(sampleRate * releaseTimeSeconds));
+    attackSamplesRemaining = 0;
+    releaseSamplesRemaining = 0;
+    wasHandClosed = handClosed.load();
     auto frequency = parameters.getRawParameterValue("frequency")->load();
     auto waveform = parameters.getRawParameterValue("waveform")->load();
     model.prepareToPlay(sampleRate, frequency, waveform);
@@ -135,7 +140,43 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
                                              juce::MidiBuffer &midiMessages)
 {
     juce::ignoreUnused(midiMessages);
-    if (handClosed.load())
+    const auto isHandClosed = handClosed.load();
+
+    if (!isHandClosed)
+    {
+        if (wasHandClosed)
+            attackSamplesRemaining = attackSamplesTotal;
+
+        wasHandClosed = false;
+        releaseSamplesRemaining = 0;
+        auto frequency = parameters.getRawParameterValue("frequency")->load();
+        auto waveform = parameters.getRawParameterValue("waveform")->load();
+        if (attackSamplesRemaining <= 0)
+        {
+            model.render(buffer, frequency, waveform);
+            return;
+        }
+
+        const auto samplesToAttack = juce::jmin(attackSamplesRemaining, buffer.getNumSamples());
+        const auto gainStart = 1.0f
+                             - static_cast<float>(attackSamplesRemaining)
+                                   / static_cast<float>(attackSamplesTotal);
+        const auto gainEnd = 1.0f
+                           - static_cast<float>(attackSamplesRemaining - samplesToAttack)
+                                 / static_cast<float>(attackSamplesTotal);
+        model.render(buffer, frequency, waveform, gainStart, gainEnd, samplesToAttack);
+        attackSamplesRemaining -= samplesToAttack;
+        return;
+    }
+
+    if (!wasHandClosed)
+    {
+        attackSamplesRemaining = 0;
+        releaseSamplesRemaining = releaseSamplesTotal;
+        wasHandClosed = true;
+    }
+
+    if (releaseSamplesRemaining <= 0)
     {
         buffer.clear();
         return;
@@ -143,7 +184,13 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
 
     auto frequency = parameters.getRawParameterValue("frequency")->load();
     auto waveform = parameters.getRawParameterValue("waveform")->load();
-    model.render(buffer, frequency, waveform);
+    const auto samplesToRelease = juce::jmin(releaseSamplesRemaining, buffer.getNumSamples());
+    const auto gainStart = static_cast<float>(releaseSamplesRemaining)
+                         / static_cast<float>(releaseSamplesTotal);
+    const auto gainEnd = static_cast<float>(releaseSamplesRemaining - samplesToRelease)
+                       / static_cast<float>(releaseSamplesTotal);
+    model.render(buffer, frequency, waveform, gainStart, gainEnd, samplesToRelease);
+    releaseSamplesRemaining -= samplesToRelease;
 }
 
 //==============================================================================
