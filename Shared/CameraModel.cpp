@@ -46,6 +46,31 @@ juce::File findHandTrackerScript()
 
     return juce::File(SYNTHCAM_HAND_TRACKER_SCRIPT_PATH);
 }
+
+juce::String findPythonExecutable()
+{
+    const auto configuredPython =
+        juce::SystemStats::getEnvironmentVariable("SYNTHCAM_PYTHON", {}).trim();
+    if (configuredPython.isNotEmpty())
+        return configuredPython;
+
+#if JUCE_MAC
+    const juce::StringArray candidates{
+        "/opt/homebrew/bin/python3",
+        "/usr/local/bin/python3",
+        "/Library/Frameworks/Python.framework/Versions/Current/bin/python3",
+        "python3"};
+    for (const auto &candidate : candidates)
+        if (candidate == "python3" || juce::File(candidate).existsAsFile())
+            return candidate;
+#endif
+
+#if JUCE_WINDOWS
+    return "python";
+#else
+    return "python3";
+#endif
+}
 }
 
 CameraModel::~CameraModel()
@@ -68,16 +93,13 @@ bool CameraModel::startHandTracker()
 
     handTracker = std::make_unique<juce::ChildProcess>();
     const auto script = findHandTrackerScript();
-    const auto pythonExecutable =
-#if JUCE_MAC
-        juce::String("python3");
-#else
-        juce::String("python");
-#endif
+    const auto pythonExecutable = findPythonExecutable();
     juce::StringArray arguments{pythonExecutable, "-u", script.getFullPathName(),
                                 handTrackerDirectory.getFullPathName()};
     if (!handTracker->start(arguments, juce::ChildProcess::wantStdErr))
     {
+        handTrackerDirectory.getChildFile("status.txt")
+            .replaceWithText("Tracker unavailable: could not start " + pythonExecutable);
         handTracker.reset();
         return false;
     }

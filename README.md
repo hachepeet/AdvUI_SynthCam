@@ -24,7 +24,19 @@ On Windows:
 ```powershell
 python -m pip install "mediapipe==0.10.14" opencv-python
 ```
+
 On macOS:
 ```shell
-python3 -m pip install "mediapipe==0.10.14" opencv-python
+python3 -m pip install mediapipe opencv-python
+```
+
+The plugin starts the first available macOS interpreter from Homebrew
+(`/opt/homebrew/bin/python3` or `/usr/local/bin/python3`), the standard
+Python framework, and then `python3`. Install the packages with the same
+interpreter that will be used by the plugin. If Python is installed elsewhere,
+set `SYNTHCAM_PYTHON` to its full executable path before starting the host:
+
+```shell
+export SYNTHCAM_PYTHON="$HOME/.venv/bin/python"
+"$SYNTHCAM_PYTHON" -m pip install mediapipe opencv-python
 ```
