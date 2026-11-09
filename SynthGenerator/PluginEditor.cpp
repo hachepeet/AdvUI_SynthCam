@@ -30,7 +30,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudi
         const auto frequency = minimumFrequency
                              * std::pow(maximumFrequency / minimumFrequency, x);
         setParameter("frequency", frequency);
-        setParameter("waveform", juce::jmap(y, 0.0f, 4.0f));
+        setParameter("waveform", juce::jmap(1.0f - y, 0.0f, 4.0f));
     });
 
     setSize(800, 700);

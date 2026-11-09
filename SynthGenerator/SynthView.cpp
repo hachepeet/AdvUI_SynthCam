@@ -35,8 +35,8 @@ SynthView::SynthView()
     waveformSlider.setSliderSnapsToMousePosition(false);
 
     sinLabel.setText("Sine", juce::dontSendNotification);
-    sqLabel.setText("Square", juce::dontSendNotification);
-    triLabel.setText("Triangle", juce::dontSendNotification);
+    sqLabel.setText("Triangle", juce::dontSendNotification);
+    triLabel.setText("Square", juce::dontSendNotification);
     rampLabel.setText("Ramp", juce::dontSendNotification);
     sawLabel.setText("Saw", juce::dontSendNotification);
     waveAxisLabel.setText("Waveform", juce::dontSendNotification);

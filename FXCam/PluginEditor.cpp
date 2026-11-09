@@ -17,6 +17,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudi
     {
         auto &parameters = processorRef.getParameters();
         const auto activeEffect = static_cast<int>(parameters.getRawParameterValue("activeEffect")->load());
+        const auto invertedY = 1.0f - y;
 
         auto setParameter = [&parameters](const juce::String &parameterId, float value)
         {
@@ -30,12 +31,12 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(AudioPluginAudi
         if (activeEffect == 0)
         {
             setParameter("delayTime", juce::jmap(x, 1.0f, 1000.0f));
-            setParameter("dryWet", y);
+            setParameter("dryWet", invertedY);
         }
         else if (activeEffect == 1)
         {
             setParameter("roomSize", x);
-            setParameter("reverbDryWet", y);
+            setParameter("reverbDryWet", invertedY);
         }
     });
 
