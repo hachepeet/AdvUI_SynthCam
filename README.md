@@ -2,14 +2,29 @@
 
 ## Build VST3
 
-Look for them in `AdvUI_SynthCam\build`
+Choose the export directory when configuring CMake. For example, on Windows:
+
+```powershell
+cmake -S . -B build-export -DSYNTHCAM_EXPORT_ROOT=C:/SynthCam_VST
+cmake --build build-export --config Release
+```
+
+On Windows, the built VST3 plugins are copied to `C:\SynthCam_VST\VST3`, and
+`hand_tracker.py` is copied to `C:\SynthCam_VST\hand_tracker.py`.
+
+On macOS, choose a macOS path instead, for example:
+
+```shell
+cmake -S . -B build-export -DSYNTHCAM_EXPORT_ROOT="$HOME/SynthCam_VST"
+cmake --build build-export --config Release
+```
 
 ## Install Mediapipe and OpenCV
-Install the worker dependencies in the Python environment that is on PATH:
+On Windows:
 ```powershell
 python -m pip install "mediapipe==0.10.14" opencv-python
 ```
-
-
-## TODO
-- To discuss: CameraView is doing all the processing, but there is no model like the rest of the interface. May need some refactoring. 
+On macOS:
+```shell
+python3 -m pip install "mediapipe==0.10.14" opencv-python
+```

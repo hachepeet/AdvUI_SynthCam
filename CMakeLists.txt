@@ -16,10 +16,23 @@ cmake_minimum_required(VERSION 3.22)
 
 project(AUDIO_PLUGIN_EXAMPLE VERSION 0.0.1)
 
+if (WIN32)
+    set(SYNTHCAM_DEFAULT_EXPORT_ROOT "C:/SynthCam_VST")
+else()
+    set(SYNTHCAM_DEFAULT_EXPORT_ROOT "${CMAKE_BINARY_DIR}/SynthCam_VST")
+endif()
+
+set(SYNTHCAM_EXPORT_ROOT "${SYNTHCAM_DEFAULT_EXPORT_ROOT}" CACHE PATH
+    "Directory where built VST3 plugins are copied")
+
 # This project only needs the JUCE modules used by its plugins. Keeping JUCE's
 # optional extras disabled prevents ALL_BUILD from compiling unrelated tools.
 set(JUCE_BUILD_EXAMPLES OFF CACHE BOOL "Disable JUCE examples" FORCE)
 set(JUCE_BUILD_EXTRAS OFF CACHE BOOL "Disable JUCE extras" FORCE)
+set(JUCE_COPY_PLUGIN_AFTER_BUILD ON CACHE BOOL
+    "Copy built plugins to the configured export directory" FORCE)
+set_directory_properties(PROPERTIES
+    JUCE_VST3_COPY_DIR "${SYNTHCAM_EXPORT_ROOT}/VST3")
 
 # If you've installed JUCE somehow (via a package manager, or directly using the CMake install
 # target), you'll need to tell this project that it depends on the installed copy of JUCE. If you've
@@ -55,6 +68,7 @@ juce_add_plugin(SynthGenerator
     PLUGIN_MANUFACTURER_CODE Juce               # A four-character manufacturer id with at least one upper-case character
     PLUGIN_CODE Dem0                            # A unique four-character plugin id with exactly one upper-case character
                                                 # GarageBand 10.3 requires the first letter to be upper-case, and the remaining letters to be lower-case
+    COPY_PLUGIN_AFTER_BUILD TRUE                # Copy the VST3 artefact to SYNTHCAM_EXPORT_ROOT after building
     FORMATS AU VST3 Standalone                  # The formats to build. Other valid formats are: AAX Unity VST AU AUv3
     PRODUCT_NAME "SynthCam - SynthGenerator"         # The name of the final executable, which can differ from the target name
     NEEDS_WEB_BROWSER FALSE                     # Set to TRUE if you need to use webviews
@@ -146,6 +160,7 @@ juce_add_plugin(FXCam
     PLUGIN_MANUFACTURER_CODE Juce               # A four-character manufacturer id with at least one upper-case character
     PLUGIN_CODE Dem1                            # A unique four-character plugin id with exactly one upper-case character
                                                 # GarageBand 10.3 requires the first letter to be upper-case, and the remaining letters to be lower-case
+    COPY_PLUGIN_AFTER_BUILD TRUE                # Copy the VST3 artefact to SYNTHCAM_EXPORT_ROOT after building
     FORMATS AU VST3 Standalone                  # The formats to build. Other valid formats are: AAX Unity VST AU AUv3
     PRODUCT_NAME "SynthCam - FXCam"         # The name of the final executable, which can differ from the target name
     NEEDS_WEB_BROWSER FALSE                     # Set to TRUE if you need to use webviews
@@ -222,3 +237,11 @@ target_link_libraries(FXCam
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)
+
+foreach(plugin_target IN ITEMS SynthGenerator_VST3 FXCam_VST3)
+    add_custom_command(TARGET ${plugin_target} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${SYNTHCAM_EXPORT_ROOT}"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/Shared/hand_tracker.py"
+            "${SYNTHCAM_EXPORT_ROOT}/hand_tracker.py")
+endforeach()

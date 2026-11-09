@@ -1,5 +1,53 @@
 #include "CameraModel.h"
 
+#if JUCE_WINDOWS
+ #include <windows.h>
+#elif JUCE_MAC
+ #include <dlfcn.h>
+#endif
+
+namespace
+{
+juce::File getPluginModuleFile()
+{
+#if JUCE_WINDOWS
+    HMODULE module = nullptr;
+    if (GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS
+                               | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                           reinterpret_cast<LPCWSTR>(&getPluginModuleFile), &module) != 0)
+    {
+        wchar_t modulePath[MAX_PATH] = {};
+        const auto length = GetModuleFileNameW(module, modulePath, MAX_PATH);
+        if (length != 0)
+            return juce::File(juce::String(modulePath, static_cast<int>(length)));
+    }
+#elif JUCE_MAC
+    Dl_info moduleInfo {};
+    if (dladdr(reinterpret_cast<const void *>(&getPluginModuleFile), &moduleInfo) != 0
+        && moduleInfo.dli_fname != nullptr)
+    {
+        return juce::File(juce::String::fromUTF8(moduleInfo.dli_fname));
+    }
+#endif
+
+    return juce::File::getSpecialLocation(juce::File::currentExecutableFile);
+}
+
+juce::File findHandTrackerScript()
+{
+    auto location = getPluginModuleFile().getParentDirectory();
+    for (int level = 0; level < 6 && location.isDirectory(); ++level)
+    {
+        const auto script = location.getChildFile("hand_tracker.py");
+        if (script.existsAsFile())
+            return script;
+        location = location.getParentDirectory();
+    }
+
+    return juce::File(SYNTHCAM_HAND_TRACKER_SCRIPT_PATH);
+}
+}
+
 CameraModel::~CameraModel()
 {
     stopHandTracker();
@@ -19,7 +67,14 @@ bool CameraModel::startHandTracker()
     frameSequence = 0;
 
     handTracker = std::make_unique<juce::ChildProcess>();
-    juce::StringArray arguments{"python", "-u", SYNTHCAM_HAND_TRACKER_SCRIPT_PATH,
+    const auto script = findHandTrackerScript();
+    const auto pythonExecutable =
+#if JUCE_MAC
+        juce::String("python3");
+#else
+        juce::String("python");
+#endif
+    juce::StringArray arguments{pythonExecutable, "-u", script.getFullPathName(),
                                 handTrackerDirectory.getFullPathName()};
     if (!handTracker->start(arguments, juce::ChildProcess::wantStdErr))
     {
