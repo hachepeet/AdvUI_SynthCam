@@ -2,41 +2,68 @@
 
 ## Build VST3
 
-Choose the export directory when configuring CMake. For example, on Windows:
+### Windows
 
 ```powershell
 cmake -S . -B build-export -DSYNTHCAM_EXPORT_ROOT=C:/SynthCam_VST
 cmake --build build-export --config Release
 ```
 
-On Windows, the built VST3 plugins are copied to `C:\SynthCam_VST\VST3`, and
+The built VST3 plugins are copied to `C:\SynthCam_VST\VST3`, and
 `hand_tracker.py` is copied to `C:\SynthCam_VST\hand_tracker.py`.
 
-On macOS, choose a macOS path instead, for example:
+### macOS
+
+The following steps build and install the VST3 files into
+`~/SynthCam_VST/VST3`.
+
+1. Install Xcode Command Line Tools, CMake, and Python 3 if they are not
+   already installed.
+2. Open Terminal and go to the project directory:
+
+```shell
+cd /path/to/AdvUI_SynthCam
+```
+
+Replace `/path/to/AdvUI_SynthCam` with the actual location of the cloned
+project.
+
+3. Install the tracker dependencies. A virtual environment is not required:
+
+```shell
+python3 -m pip install mediapipe opencv-python
+```
+
+4. Configure and build the Release plugins:
 
 ```shell
 cmake -S . -B build-export -DSYNTHCAM_EXPORT_ROOT="$HOME/SynthCam_VST"
 cmake --build build-export --config Release
 ```
 
-## Install Mediapipe and OpenCV
-On Windows:
-```powershell
-python -m pip install "mediapipe==0.10.14" opencv-python
+After the build, these files should exist:
+
+```text
+~/SynthCam_VST/VST3/SynthCam - SynthGenerator.vst3
+~/SynthCam_VST/VST3/SynthCam - FXCam.vst3
+~/SynthCam_VST/hand_tracker.py
 ```
 
-On macOS:
-```shell
-python3 -m pip install mediapipe opencv-python
-```
+5. Copy the `.vst3` folders from `~/SynthCam_VST/VST3` to the host's VST3
+   plugin folder, or add `~/SynthCam_VST/VST3` as a custom VST3 scan folder in
+   the host. Rescan plugins in the host, then load either SynthGenerator or
+   FXCam.
+6. Allow camera access when macOS asks. The hand tracker starts when the
+   plugin opens its camera view.
 
-The plugin starts the first available macOS interpreter from Homebrew
-(`/opt/homebrew/bin/python3` or `/usr/local/bin/python3`), the standard
-Python framework, and then `python3`. Install the packages with the same
-interpreter that will be used by the plugin. If Python is installed elsewhere,
-set `SYNTHCAM_PYTHON` to its full executable path before starting the host:
+If the plugin reports a missing Python module, install the packages with the
+same interpreter used by the plugin:
 
 ```shell
-export SYNTHCAM_PYTHON="$HOME/.venv/bin/python"
+SYNTHCAM_PYTHON="$(command -v python3)"
 "$SYNTHCAM_PYTHON" -m pip install mediapipe opencv-python
 ```
+
+For a virtual environment, replace the path with its Python executable and
+start the audio host from the same Terminal session so it receives
+`SYNTHCAM_PYTHON`.
