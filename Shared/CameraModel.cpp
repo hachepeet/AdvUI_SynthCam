@@ -3,7 +3,7 @@
 
 #if JUCE_WINDOWS
  #include <windows.h>
-#elif JUCE_MAC
+#elif JUCE_MAC || JUCE_LINUX
  #include <dlfcn.h>
 #endif
 
@@ -22,7 +22,7 @@ juce::File getPluginModuleFile()
         if (length != 0)
             return juce::File(juce::String(modulePath, static_cast<int>(length)));
     }
-#elif JUCE_MAC
+#elif JUCE_MAC || JUCE_LINUX
     Dl_info moduleInfo {};
     if (dladdr(reinterpret_cast<const void *>(&getPluginModuleFile), &moduleInfo) != 0
         && moduleInfo.dli_fname != nullptr)

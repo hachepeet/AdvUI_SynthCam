@@ -1,6 +1,11 @@
 # AdvUI_SynthCam
 
-## Build VST3
+## Build plugins
+
+The project builds VST3 and Standalone plugins on Windows, macOS, and Linux.
+macOS also builds an AU plugin. The default export directory is
+`<build-directory>/SynthCam_VST`; it can be overridden with
+`-DSYNTHCAM_EXPORT_ROOT=<directory>`.
 
 ### Windows
 
@@ -9,8 +14,10 @@ cmake -S . -B build-export -DSYNTHCAM_EXPORT_ROOT=C:/SynthCam_VST
 cmake --build build-export --config Release
 ```
 
-The built VST3 plugins are copied to `C:\SynthCam_VST\VST3`, and
-`hand_tracker.py` is copied to `C:\SynthCam_VST\hand_tracker.py`.
+With the command above, the built VST3 plugins are copied to
+`C:\SynthCam_VST\VST3`, and `hand_tracker.py` is copied to
+`C:\SynthCam_VST\hand_tracker.py`. Without an explicit export path, they are
+placed under `build-export/SynthCam_VST`.
 
 ### macOS
 
@@ -67,3 +74,20 @@ SYNTHCAM_PYTHON="$(command -v python3)"
 For a virtual environment, replace the path with its Python executable and
 start the audio host from the same Terminal session so it receives
 `SYNTHCAM_PYTHON`.
+
+### Linux
+
+Install CMake, a C++ compiler, Python 3, and the development packages required
+by JUCE and the camera backend. Then install the tracker dependencies and
+build:
+
+```shell
+python3 -m pip install mediapipe opencv-python
+cmake -S . -B build-export -DSYNTHCAM_EXPORT_ROOT="$HOME/SynthCam_VST"
+cmake --build build-export --config Release
+```
+
+Copy the VST3 bundles from `$HOME/SynthCam_VST/VST3` to the host's VST3 scan
+folder, or configure that directory as a custom scan folder. Set
+`SYNTHCAM_PYTHON` to the Python executable containing the tracker dependencies
+when it is not available as `python3` on `PATH`.
