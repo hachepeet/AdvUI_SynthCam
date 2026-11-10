@@ -110,3 +110,19 @@ Copy the VST3 bundles from `$HOME/SynthCam_VST/VST3` to the host's VST3 scan
 folder, or configure that directory as a custom scan folder. Set
 `SYNTHCAM_PYTHON` to the Python executable containing the tracker dependencies
 when it is not available as `python3` on `PATH`.
+
+## Install and use in a DAW
+
+After building, install the generated `.vst3` plugin folders in a folder that
+your DAW scans for VST3 plugins. You can either copy them to the DAW's
+standard VST3 folder or add the build output folder as a custom plugin path:
+
+- Windows: `C:\SynthCam_VST\VST3`
+- macOS: `~/SynthCam_VST/VST3`
+- Linux: `$HOME/SynthCam_VST/VST3`
+
+Open your DAW's plugin settings, add the directory to the paths, rescan the
+VST3 folders, and create an instrument track for `SynthCam - SynthGenerator`
+or an audio/effects track for `SynthCam - FXCam`. Allow camera access if
+prompted, then open the plugin's camera view and start the hand tracker.
+The standalone applications can be used without a DAW.
