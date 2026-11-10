@@ -10,8 +10,8 @@ SynthView::SynthView()
     addAndMakeVisible(waveformSlider);
 
     addAndMakeVisible(sinLabel);
-    addAndMakeVisible(sqLabel);
     addAndMakeVisible(triLabel);
+    addAndMakeVisible(sqLabel);
     addAndMakeVisible(rampLabel);
     addAndMakeVisible(sawLabel);
     addAndMakeVisible(waveAxisLabel);
@@ -36,8 +36,8 @@ SynthView::SynthView()
     waveformSlider.setSliderSnapsToMousePosition(false);
 
     sinLabel.setText("Sine", juce::dontSendNotification);
-    sqLabel.setText("Triangle", juce::dontSendNotification);
-    triLabel.setText("Square", juce::dontSendNotification);
+    triLabel.setText("Triangle", juce::dontSendNotification);
+    sqLabel.setText("Square", juce::dontSendNotification);
     rampLabel.setText("Ramp", juce::dontSendNotification);
     sawLabel.setText("Saw", juce::dontSendNotification);
     waveAxisLabel.setText("Waveform", juce::dontSendNotification);
@@ -52,8 +52,8 @@ SynthView::SynthView()
     fqDefaultLabel.setJustificationType(juce::Justification::centred);
 
     sinLabel.setJustificationType(juce::Justification::centredLeft);
-    sqLabel.setJustificationType(juce::Justification::centredLeft);
     triLabel.setJustificationType(juce::Justification::centredLeft);
+    sqLabel.setJustificationType(juce::Justification::centredLeft);
     rampLabel.setJustificationType(juce::Justification::centredLeft);
     sawLabel.setJustificationType(juce::Justification::centredLeft);
 }
@@ -78,8 +78,8 @@ void SynthView::resized()
     int interval = waveformSlider.getHeight() / 4;
     sawLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY(), 70, 20);
     rampLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + interval, 70, 20);
-    triLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + (2 * interval), 70, 20);
-    sqLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + (3 * interval), 70, 20);
+    sqLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + (2 * interval), 70, 20);
+    triLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getY() + (3 * interval), 70, 20);
     sinLabel.setBounds(waveformSlider.getX() - 55, waveformSlider.getBottom() - 20 / 2, 70, 20);
     waveAxisLabel.setBounds(waveformSlider.getX() - 150, waveformSlider.getY() + waveformSlider.getHeight() / 2 - 10, 100, 20);
 

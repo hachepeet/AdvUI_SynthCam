@@ -89,7 +89,7 @@ void SynthModel::createTriWavetable() {
 
     for (unsigned int i = 0; i < tableSize; ++i){
         auto t = (float) i / (float) tableSize;
-        samples[i] = 4.0f * std::abs(2.0f * (t - std::floor(t + 0.5f))) - 1.0f;
+        samples[i] = 2.0f * std::abs(2.0f * (t - std::floor(t + 0.5f))) - 1.0f;
     }
 
     samples[tableSize] = samples[0];
