@@ -1,3 +1,4 @@
+// Provides a reverb effect for the audio processor.
 #pragma once
 
 class ReverbFX {

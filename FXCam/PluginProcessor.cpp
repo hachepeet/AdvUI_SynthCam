@@ -1,3 +1,4 @@
+// Implements the effects audio processor.
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 

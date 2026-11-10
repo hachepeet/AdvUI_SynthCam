@@ -1,3 +1,4 @@
+// Implements the effects plugin editor.
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 

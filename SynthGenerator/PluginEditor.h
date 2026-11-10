@@ -1,3 +1,4 @@
+// Declares the synthesizer plugin editor.
 #pragma once
 
 #include "PluginProcessor.h"

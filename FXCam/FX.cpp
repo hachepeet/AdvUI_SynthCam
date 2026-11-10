@@ -1,3 +1,4 @@
+// Implements the effects plugin component.
 #include "FX.h"
 #include "FXView.h"
 

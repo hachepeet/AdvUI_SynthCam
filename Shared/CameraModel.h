@@ -1,3 +1,4 @@
+// Declares the shared camera model.
 #pragma once
 
 #include <juce_core/juce_core.h>

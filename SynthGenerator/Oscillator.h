@@ -1,3 +1,4 @@
+// Provides oscillator helpers for the synthesizer.
 #pragma once 
 
 #include <cmath>

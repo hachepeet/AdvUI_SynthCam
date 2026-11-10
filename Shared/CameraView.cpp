@@ -1,3 +1,4 @@
+// Implements the shared camera interface.
 #include "CameraView.h"
 
 #include "Theme.h"

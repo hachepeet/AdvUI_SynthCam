@@ -1,3 +1,4 @@
+// Implements the synthesizer audio processor.
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 

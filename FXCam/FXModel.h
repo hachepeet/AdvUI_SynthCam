@@ -1,3 +1,4 @@
+// Declares the effects model and parameter state.
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>

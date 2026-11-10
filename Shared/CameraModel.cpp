@@ -1,3 +1,4 @@
+// Implements the shared camera model.
 #include "CameraModel.h"
 
 #if JUCE_WINDOWS

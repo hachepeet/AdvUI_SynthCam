@@ -1,3 +1,4 @@
+// Declares the effects plugin editor.
 #pragma once
 
 #include "PluginProcessor.h"

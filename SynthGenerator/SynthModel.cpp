@@ -1,3 +1,4 @@
+// Implements the synthesizer model and parameters.
 #include "SynthModel.h"
 #include <cmath>
 

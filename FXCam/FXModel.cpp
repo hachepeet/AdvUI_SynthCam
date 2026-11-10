@@ -1,3 +1,4 @@
+// Implements the effects model and parameter state.
 #include "FXModel.h"
 
 FXModel::FXModel(juce::AudioProcessorValueTreeState &state)

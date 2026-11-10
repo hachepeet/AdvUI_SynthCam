@@ -1,3 +1,4 @@
+// Implements the effects interface.
 #include "FXView.h"
 #include "Theme.h"
 

@@ -1,3 +1,4 @@
+// Implements the synthesizer interface.
 #include "SynthView.h"
 #include "Theme.h"
 

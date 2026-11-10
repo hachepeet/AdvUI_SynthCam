@@ -1,3 +1,4 @@
+// Implements the synthesizer engine.
 #include "Synth.h"
 #include "SynthView.h"
 

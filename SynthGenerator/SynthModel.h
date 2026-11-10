@@ -1,3 +1,4 @@
+// Declares the synthesizer model and parameters.
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>

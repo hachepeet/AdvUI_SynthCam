@@ -1,3 +1,4 @@
+// Declares the shared camera interface.
 #pragma once
 
 #include <juce_gui_basics/juce_gui_basics.h>

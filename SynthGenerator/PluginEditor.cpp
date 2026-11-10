@@ -1,3 +1,4 @@
+// Implements the synthesizer plugin editor.
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include <cmath>

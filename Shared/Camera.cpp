@@ -1,3 +1,4 @@
+// Implements camera capture and hand tracking support.
 #include "Camera.h"
 #include "CameraView.h"
 
