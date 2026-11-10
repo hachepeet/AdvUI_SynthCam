@@ -25,7 +25,13 @@ The following steps build and install the VST3 files into
 `~/SynthCam_VST/VST3`.
 
 1. Install Xcode Command Line Tools, CMake, and Python 3 if they are not
-   already installed.
+   already installed. Make sure to use Python 3.12 as newer versions of Python 
+   can be incompatible with the necessary version of MediaPipe. On macOs with Homebrew:
+
+``` shell
+brew install python@3.12
+```
+
 2. Open Terminal and go to the project directory:
 
 ```shell
@@ -35,18 +41,31 @@ cd /path/to/AdvUI_SynthCam
 Replace `/path/to/AdvUI_SynthCam` with the actual location of the cloned
 project.
 
-3. Install the tracker dependencies. A virtual environment is not required:
+3. Create a virtual environment and install tracker dependencies. Make sure to install
+   version 0.10.21 of MediaPipe as newer versions do not support the solutions module
+   used for hand tracking. 
 
-```shell
-python3 -m pip install mediapipe opencv-python
+``` shell
+/opt/homebrew/bin/python3.12 -m venv ~/SynthCam_Venv
+~/SynthCam_Venv/bin/python -m pip install --upgrade pip 
+~/SynthCam_Venv/bin/python -m pip install mediapipe==0.10.21 opencv-python
 ```
 
-4. Configure and build the Release plugins:
+Note: the homebrew path above is for Apple Silicon Macs, for Intel Macs homebrew is
+typically installed at /usr/local or /usr/local/bin/brew instead of opt/homebrew.
+
+4. Configure the Python executable and build the Release plugins:
 
 ```shell
+launchctl setenv SYNTHCAM_PYTHON "$HOME/SynthCam_Venv/bin/python"
 cmake -S . -B build-export -DSYNTHCAM_EXPORT_ROOT="$HOME/SynthCam_VST"
 cmake --build build-export --config Release
 ```
+
+Note: Setting SYNTHCAM_PYTHON to the virtual environment's Python executable should
+make it so that the host can be opened from the general applications library instead of
+having to be opened from the same terminal session. However the host can also be 
+opened from the same terminal session as an added precaution. 
 
 After the build, these files should exist:
 
@@ -63,17 +82,13 @@ After the build, these files should exist:
 6. Allow camera access when macOS asks. The hand tracker starts when the
    plugin opens its camera view.
 
-If the plugin reports a missing Python module, install the packages with the
-same interpreter used by the plugin:
+If the plugin reports a missing Python module, make sure that you have installed 
+the packages with the same interpreter used by the plugin:
 
 ```shell
 SYNTHCAM_PYTHON="$(command -v python3)"
 "$SYNTHCAM_PYTHON" -m pip install mediapipe opencv-python
 ```
-
-For a virtual environment, replace the path with its Python executable and
-start the audio host from the same Terminal session so it receives
-`SYNTHCAM_PYTHON`.
 
 ### Linux
 

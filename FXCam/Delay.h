@@ -1,4 +1,9 @@
 // Provides a delay effect for the audio processor.
+/*
+References: 
+Synth Notes Single Echo Delay: https://synthnotes.ucsd.edu/wp7/index.php/2019/11/13/introduction-single-echo-delay/ 
+JUCE Delay Tutorial: https://juce.com/tutorials/tutorial_dsp_delay_line/ 
+*/
 #pragma once 
 
 #include <juce_audio_processors/juce_audio_processors.h>

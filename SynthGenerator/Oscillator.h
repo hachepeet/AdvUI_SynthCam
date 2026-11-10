@@ -1,8 +1,11 @@
 // Provides oscillator helpers for the synthesizer.
+/*
+References: 
+JUCE Wavetable Synth Tutorial: https://juce.com/tutorials/tutorial_wavetable_synth/ 
+*/
 #pragma once 
 
 #include <cmath>
-// #include <juce_core/maths/juce_MathsFunctions.h>
 #include <juce_core/system/juce_PlatformDefs.h>
 
 class Oscillator {

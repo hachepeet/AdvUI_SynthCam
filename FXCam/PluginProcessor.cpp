@@ -69,8 +69,7 @@ double AudioPluginAudioProcessor::getTailLengthSeconds() const
 
 int AudioPluginAudioProcessor::getNumPrograms()
 {
-    return 1; // NB: some hosts don't cope very well if you tell them there are 0 programs,
-              // so this should be at least 1, even if you're not really implementing programs.
+    return 1; 
 }
 
 int AudioPluginAudioProcessor::getCurrentProgram()
@@ -95,19 +94,15 @@ void AudioPluginAudioProcessor::changeProgramName(int index, const juce::String 
 }
 
 //==============================================================================
+// Pre-playback initialization
 void AudioPluginAudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
     juce::ignoreUnused(sampleRate, samplesPerBlock);
-
     model.prepareToPlay(sampleRate, getTotalNumOutputChannels());
 }
 
 void AudioPluginAudioProcessor::releaseResources()
 {
-    // When playback stops, you can use this as an opportunity to free up any
-    // spare memory, etc.
 }
 
 bool AudioPluginAudioProcessor::isBusesLayoutSupported(const BusesLayout &layouts) const
@@ -116,14 +111,9 @@ bool AudioPluginAudioProcessor::isBusesLayoutSupported(const BusesLayout &layout
     juce::ignoreUnused(layouts);
     return true;
 #else
-    // This is the place where you check if the layout is supported.
-    // In this template code we only support mono or stereo.
-    // Some plugin hosts, such as certain GarageBand versions, will only
-    // load plugins that support stereo bus layouts.
     if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono() && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
 
-    // This checks if the input layout matches the output layout
 #if !JucePlugin_IsSynth
     if (layouts.getMainOutputChannelSet() != layouts.getMainInputChannelSet())
         return false;
@@ -133,6 +123,7 @@ bool AudioPluginAudioProcessor::isBusesLayoutSupported(const BusesLayout &layout
 #endif
 }
 
+// Main site of audio processing
 void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
                                              juce::MidiBuffer &midiMessages)
 {
@@ -143,7 +134,7 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
 //==============================================================================
 bool AudioPluginAudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    return true; 
 }
 
 juce::AudioProcessorEditor *AudioPluginAudioProcessor::createEditor()
@@ -168,7 +159,6 @@ void AudioPluginAudioProcessor::setStateInformation(const void *data, int sizeIn
 }
 
 //==============================================================================
-// This creates new instances of the plugin..
 juce::AudioProcessor *JUCE_CALLTYPE createPluginFilter()
 {
     return new AudioPluginAudioProcessor();

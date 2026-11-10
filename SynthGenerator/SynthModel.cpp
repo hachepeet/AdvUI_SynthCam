@@ -1,11 +1,15 @@
 // Implements the synthesizer model and parameters.
+/* 
+References: 
+JUCE Wavetable Synth Tutorial: https://juce.com/tutorials/tutorial_wavetable_synth/
+Synth Notes Square and Triangle Oscillators: https://synthnotes.ucsd.edu/wp7/index.php/2019/10/01/simple-square-and-triangle-oscillators/
+Synth Notes Ramp and Sawtooth Oscillators: https://synthnotes.ucsd.edu/wp7/index.php/2019/10/01/simple-ramp-and-sawtooth-oscillators/ 
+*/
 #include "SynthModel.h"
 #include <cmath>
 
 SynthModel::SynthModel(juce::AudioProcessorValueTreeState &state)
-    : parameters(state),
-      frequency(parameters.getRawParameterValue("frequency")),
-      waveform(parameters.getRawParameterValue("waveform"))
+    : parameters(state)
 {
     createSineWavetable();
     createSquareWavetable();
@@ -14,7 +18,7 @@ SynthModel::SynthModel(juce::AudioProcessorValueTreeState &state)
     createSawWavetable();
 }
 
-void SynthModel::prepareToPlay(double newSampleRate, float frequency, int waveform)
+void SynthModel::prepareToPlay(double newSampleRate, float frequency)
 {
     this->sampleRate = newSampleRate;
 
@@ -31,7 +35,7 @@ void SynthModel::prepareToPlay(double newSampleRate, float frequency, int wavefo
 
 }
 
-void SynthModel::render(juce::AudioBuffer<float> &buffer, float frequency, int waveform,
+void SynthModel::render(juce::AudioBuffer<float> &buffer, float frequency, float waveform,
                         float gainStart, float gainEnd, int activeSamples)
 {
     if (sampleRate <= 0.0 || buffer.getNumChannels() == 0)
@@ -64,21 +68,18 @@ void SynthModel::render(juce::AudioBuffer<float> &buffer, float frequency, int w
 }
 
 void SynthModel::createSineWavetable() {
-    sineTable.setSize (1, (int) tableSize + 1); // only need 1 channel, # of samples = tableSize + 1 for wrapping
+    sineTable.setSize (1, (int) tableSize + 1);
     auto* samples = sineTable.getWritePointer (0);                                   
 
-    // angleDelta = angle between each sample, depends on # of samples
     auto angleDelta = juce::MathConstants<double>::twoPi / (double) (tableSize - 1); 
     auto currentAngle = 0.0;
 
-    // for each index of the wavetable, get the value of sine, assign that value to the sample in the buffer, and increment the current angle by delta
     for (unsigned int i = 0; i < tableSize; ++i){
         auto sample = std::sin (currentAngle);                                       
         samples[i] = (float) sample;
         currentAngle += angleDelta;
     }
 
-    // copying the first sample to the end to wrap around
     samples[tableSize] = samples[0];
 }
 
@@ -98,7 +99,6 @@ void SynthModel::createSquareWavetable() {
     squareTable.setSize(1, (int) tableSize + 1);
     auto* samples = squareTable.getWritePointer(0);
 
-    // one cycle of a square wave: first half of table is all -1, second half is all +1
     for (unsigned int i = 0; i < tableSize; ++i){
         if (i < tableSize / 2) samples[i] = -1.0f;
         else samples [i] = 1.0f;

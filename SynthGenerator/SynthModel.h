@@ -9,8 +9,8 @@ class SynthModel final
 public:
     explicit SynthModel(juce::AudioProcessorValueTreeState &parameters);
 
-    void prepareToPlay(double newSampleRate, float frequency, int waveform);
-    void render(juce::AudioBuffer<float> &buffer, float frequency, int waveform,
+    void prepareToPlay(double newSampleRate, float frequency);
+    void render(juce::AudioBuffer<float> &buffer, float frequency, float waveform,
                 float gainStart = 1.0f, float gainEnd = 1.0f, int activeSamples = -1);
     void createSineWavetable();
     void createTriWavetable();
@@ -22,11 +22,7 @@ public:
 
 private:
     juce::AudioProcessorValueTreeState &parameters;
-    std::atomic<float> *frequency = nullptr;
-    std::atomic<float> *waveform = nullptr;
     double sampleRate = 0.0;
-    // double currentAngle = 0.0;
-    float level = 0.0f;
     juce::OwnedArray<Oscillator> oscillators;
     const unsigned int tableSize = 1 << 7;
     juce::AudioSampleBuffer sineTable;

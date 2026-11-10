@@ -42,6 +42,9 @@ juce::File findHandTrackerScript()
         const auto script = location.getChildFile("hand_tracker.py");
         if (script.existsAsFile())
             return script;
+        const auto sharedScript = location.getChildFile("Shared").getChildFile("hand_tracker.py");
+        if (sharedScript.existsAsFile())
+            return sharedScript;
         location = location.getParentDirectory();
     }
 

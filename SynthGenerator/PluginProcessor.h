@@ -45,7 +45,6 @@ public:
     void getStateInformation(juce::MemoryBlock &destData) override;
     void setStateInformation(const void *data, int sizeInBytes) override;
 
-    // double phase = 0.0;
     juce::AudioProcessorValueTreeState &getParameters() noexcept { return parameters; }
     void setHandClosed(bool shouldMute) noexcept { handClosed.store(shouldMute); }
 
