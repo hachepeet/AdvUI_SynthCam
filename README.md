@@ -1,3 +1,7 @@
+This project was created for the Advanced Programming of Interactive Systems
+course. It explores interactive audio and visual processing through SynthCam,
+combining camera-based interaction with synthesizer and effects plugins.
+
 # AdvUI_SynthCam
 
 ## Build plugins
@@ -90,7 +94,7 @@ SYNTHCAM_PYTHON="$(command -v python3)"
 "$SYNTHCAM_PYTHON" -m pip install mediapipe opencv-python
 ```
 
-### Linux
+### Linux (has not been tested)
 
 Install CMake, a C++ compiler, Python 3, and the development packages required
 by JUCE and the camera backend. Then install the tracker dependencies and
